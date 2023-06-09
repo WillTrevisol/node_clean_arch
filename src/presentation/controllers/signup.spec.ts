@@ -1,4 +1,5 @@
 import { SignUpController } from './signup'
+import { MissingParameterError } from '../errors/missing-parameter-error'
 
 describe('SignUp Controller', () => {
   test('Should return 400 if no name is provided', () => {
@@ -13,7 +14,7 @@ describe('SignUp Controller', () => {
     const httpResponse = systemUndeTest.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing parameter: name'))
+    expect(httpResponse.body).toEqual(new MissingParameterError('name'))
   })
 
   test('Should return 400 if no email is provided', () => {
@@ -28,6 +29,36 @@ describe('SignUp Controller', () => {
     const httpResponse = systemUndeTest.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing parameter: email'))
+    expect(httpResponse.body).toEqual(new MissingParameterError('email'))
+  })
+
+  test('Should return 400 if no password is provided', () => {
+    const systemUndeTest = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    const httpResponse = systemUndeTest.handle(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new MissingParameterError('password'))
+  })
+
+  test('Should return 400 if no password is provided', () => {
+    const systemUndeTest = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+    const httpResponse = systemUndeTest.handle(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new MissingParameterError('passwordConfirmation'))
   })
 })
