@@ -13,5 +13,21 @@ describe('SignUp Controller', () => {
     const httpResponse = systemUndeTest.handle(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new Error('Missing parameter: name'))
+  })
+
+  test('Should return 400 if no email is provided', () => {
+    const systemUndeTest = new SignUpController()
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    const httpResponse = systemUndeTest.handle(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new Error('Missing parameter: email'))
   })
 })
