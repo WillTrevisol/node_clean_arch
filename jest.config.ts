@@ -25,7 +25,6 @@ export default {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts'
   ],
-  collectCoverage: true,
   coverageDirectory: 'coverage',
   // A map from regular expressions to paths to transformers
   transform: {
