@@ -5,7 +5,7 @@ export const MongoHelper = {
 
   async connect (uri: string): Promise<void> {
     this.mongoClient = await MongoClient.connect(
-      process.env.MONGO_URL as string, {
+      uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
       }
