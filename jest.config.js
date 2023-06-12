@@ -23,7 +23,8 @@ module.exports = {
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverageFrom: [
-    '<rootDir>/src/**/*.ts'
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/main/**/*.ts'
   ],
   coverageDirectory: 'coverage',
   // A map from regular expressions to paths to transformers
