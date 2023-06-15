@@ -1,6 +1,6 @@
 import { SignUpController } from './signup'
 import { MissingParameterError, InvalidParameterError, ServerError } from '../../errors'
-import { type EmailValidator, type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest } from './signup-protocols'
+import { type EmailValidator, type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest, type Validation } from './signup-protocols'
 import { ok, serverError, badRequest } from '../../helpers/http-helper'
 
 const emailValidatorFactory = (): EmailValidator => {
@@ -23,6 +23,16 @@ const addAccountFactory = (): AddAccount => {
   return new AddAccountStub()
 }
 
+const validationStubFactory = (): Validation => {
+  class ValidationSub implements Validation {
+    validate (data: any): any {
+      return null
+    }
+  }
+
+  return new ValidationSub()
+}
+
 const httpRequestFactory = (): HttpRequest => ({
   body: {
     name: 'any_name',
@@ -43,73 +53,24 @@ interface SutTypes {
   systemUnderTest: SignUpController
   emailValidatorStub: EmailValidator
   addAccountStub: AddAccount
+  validationStub: Validation
 }
 
 const sutFactory = (): SutTypes => {
   const emailValidatorStub = emailValidatorFactory()
   const addAccountStub = addAccountFactory()
-  const systemUnderTest = new SignUpController(emailValidatorStub, addAccountStub)
+  const validationStub = validationStubFactory()
+  const systemUnderTest = new SignUpController(emailValidatorStub, addAccountStub, validationStub)
 
   return {
     systemUnderTest,
     emailValidatorStub,
-    addAccountStub
+    addAccountStub,
+    validationStub
   }
 }
 
 describe('SignUp Controller', () => {
-  test('Should return 400 if no name is provided', async () => {
-    const { systemUnderTest } = sutFactory()
-    const httpRequest = {
-      body: {
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParameterError('name')))
-  })
-
-  test('Should return 400 if no email is provided', async () => {
-    const { systemUnderTest } = sutFactory()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParameterError('email')))
-  })
-
-  test('Should return 400 if no password is provided', async () => {
-    const { systemUnderTest } = sutFactory()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        passwordConfirmation: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParameterError('password')))
-  })
-
-  test('Should return 400 if no password confirmation is provided', async () => {
-    const { systemUnderTest } = sutFactory()
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParameterError('passwordConfirmation')))
-  })
-
   test('Should return 400 if password confirmation fails', async () => {
     const { systemUnderTest } = sutFactory()
     const httpRequest = {
@@ -173,5 +134,20 @@ describe('SignUp Controller', () => {
     const { systemUnderTest } = sutFactory()
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
     expect(httpResponse).toEqual(ok(fakeAccountFactory()))
+  })
+
+  test('Should call Validation with correct value', async () => {
+    const { systemUnderTest, validationStub } = sutFactory()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const httpRequest = httpRequestFactory()
+    await systemUnderTest.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should return 400 if Validation returns error', async () => {
+    const { systemUnderTest, validationStub } = sutFactory()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParameterError('any_field'))
+    const httpResponse = await systemUnderTest.handle(httpRequestFactory())
+    expect(httpResponse).toEqual(badRequest(new MissingParameterError('any_field')))
   })
 })
