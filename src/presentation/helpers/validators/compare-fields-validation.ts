@@ -10,7 +10,7 @@ export class CompareFieldsValidation implements Validation {
   }
 
   validate (data: any): any {
-    if (!data[this.fieldName] !== !data[this.fieldToCompare]) {
+    if (data[this.fieldName] !== data[this.fieldToCompare]) {
       return new InvalidParameterError(this.fieldToCompare)
     }
   }

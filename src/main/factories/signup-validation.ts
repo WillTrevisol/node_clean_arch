@@ -1,7 +1,9 @@
 import { type Validation } from '../../presentation/controllers/signup/signup-protocols'
-import { CompareFieldsValidation } from '../../presentation/helpers/validators/compare-fields-validation copy'
+import { CompareFieldsValidation } from '../../presentation/helpers/validators/compare-fields-validation'
+import { EmailValidation } from '../../presentation/helpers/validators/email-validation'
 import { RequiredFieldValidation } from '../../presentation/helpers/validators/required-field-validation'
 import { ValidationComposite } from '../../presentation/helpers/validators/validation-composite'
+import { EmailValidatorAdapter } from '../../utils/email-validator-adapter'
 
 export const singupValidationFactory = (): Validation => {
   const validations: Validation[] = []
@@ -9,5 +11,6 @@ export const singupValidationFactory = (): Validation => {
     validations.push(new RequiredFieldValidation(field))
   }
   validations.push(new CompareFieldsValidation('password', 'passwordConfirmation'))
+  validations.push(new EmailValidation(new EmailValidatorAdapter(), 'email'))
   return new ValidationComposite(validations)
 }
