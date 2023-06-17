@@ -1,5 +1,5 @@
-import { type HttpRequest, type EmailValidator, type Authentication } from '../signup/signup-protocols'
-import { InvalidParameterError, MissingParameterError, ServerError } from '../../errors'
+import { type HttpRequest, type Authentication, type Validation } from '../signup/signup-protocols'
+import { MissingParameterError, ServerError } from '../../errors'
 import { ok, badRequest, serverError, unauthorized } from '../../helpers/http-helper'
 import { LoginController } from './login'
 
@@ -12,13 +12,14 @@ const authenticationStubFactory = (): Authentication => {
   return new AuthenticationStub()
 }
 
-const emailValidatorFactory = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      return true
+const validationStubFactory = (): Validation => {
+  class ValidationSub implements Validation {
+    validate (data: any): any {
+      return null
     }
   }
-  return new EmailValidatorStub()
+
+  return new ValidationSub()
 }
 
 const fakeHttpRequestFactory = (): HttpRequest => ({
@@ -30,68 +31,23 @@ const fakeHttpRequestFactory = (): HttpRequest => ({
 
 interface SutTypes {
   systemUnderTest: LoginController
-  emailValidatorStub: EmailValidator
   authenticationStub: Authentication
+  validationStub: Validation
 }
 
 const sutFactory = (): SutTypes => {
-  const emailValidatorStub = emailValidatorFactory()
   const authenticationStub = authenticationStubFactory()
-  const systemUnderTest = new LoginController(emailValidatorStub, authenticationStub)
+  const validationStub = validationStubFactory()
+  const systemUnderTest = new LoginController(validationStub, authenticationStub)
 
   return {
     systemUnderTest,
-    emailValidatorStub,
-    authenticationStub
+    authenticationStub,
+    validationStub
   }
 }
 
 describe('Login Controller', () => {
-  test('Should return 400 if no email is provided', async () => {
-    const { systemUnderTest } = sutFactory()
-    const httpRequest = {
-      body: {
-        password: 'any_password'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParameterError('email')))
-  })
-
-  test('Should return 400 if no password is provided', async () => {
-    const { systemUnderTest } = sutFactory()
-    const httpRequest = {
-      body: {
-        email: 'any_email@mail.com'
-      }
-    }
-    const httpResponse = await systemUnderTest.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new MissingParameterError('password')))
-  })
-
-  test('Should return 400 if an invalid email is provided', async () => {
-    const { systemUnderTest, emailValidatorStub } = sutFactory()
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const httpResponse = await systemUnderTest.handle(fakeHttpRequestFactory())
-    expect(httpResponse).toEqual(badRequest(new InvalidParameterError('email')))
-  })
-
-  test('Should call EmailValidator with correct email', async () => {
-    const { systemUnderTest, emailValidatorStub } = sutFactory()
-    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
-    await systemUnderTest.handle(fakeHttpRequestFactory())
-    expect(isValidSpy).toBeCalledWith('any_email@mail.com')
-  })
-
-  test('Should return 500 if EmailValidator throws', async () => {
-    const { systemUnderTest, emailValidatorStub } = sutFactory()
-    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(
-      () => { throw new Error() }
-    )
-    const httpResponse = await systemUnderTest.handle(fakeHttpRequestFactory())
-    expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
-  })
-
   test('Should call Authentication with correct values', async () => {
     const { systemUnderTest, authenticationStub } = sutFactory()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
@@ -121,5 +77,20 @@ describe('Login Controller', () => {
     const { systemUnderTest } = sutFactory()
     const httpResponse = await systemUnderTest.handle(fakeHttpRequestFactory())
     expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
+  })
+
+  test('Should call Validation with correct value', async () => {
+    const { systemUnderTest, validationStub } = sutFactory()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const httpRequest = fakeHttpRequestFactory()
+    await systemUnderTest.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should return 400 if Validation returns error', async () => {
+    const { systemUnderTest, validationStub } = sutFactory()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParameterError('any_field'))
+    const httpResponse = await systemUnderTest.handle(fakeHttpRequestFactory())
+    expect(httpResponse).toEqual(badRequest(new MissingParameterError('any_field')))
   })
 })
