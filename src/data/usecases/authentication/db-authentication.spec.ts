@@ -109,4 +109,10 @@ describe('DbAuthentication UseCase', () => {
     const result = systemUnderTest.auth(fakeAuthenticationModel())
     await expect(result).rejects.toThrow()
   })
+
+  test('Should return AccessToken on success', async () => {
+    const { systemUnderTest } = sutFactory()
+    const accessToken = await systemUnderTest.auth(fakeAuthenticationModel())
+    expect(accessToken).toBe('any_token')
+  })
 })
