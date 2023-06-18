@@ -100,4 +100,13 @@ describe('DbAuthentication UseCase', () => {
     await systemUnderTest.auth(fakeAuthenticationModel())
     expect(generateSpy).toHaveBeenCalledWith('any_id')
   })
+
+  test('Should throw if TokenGenerator throws', async () => {
+    const { systemUnderTest, tokenGeneratorStub } = sutFactory()
+    jest.spyOn(tokenGeneratorStub, 'generate').mockReturnValueOnce(
+      Promise.reject(new Error())
+    )
+    const result = systemUnderTest.auth(fakeAuthenticationModel())
+    await expect(result).rejects.toThrow()
+  })
 })
