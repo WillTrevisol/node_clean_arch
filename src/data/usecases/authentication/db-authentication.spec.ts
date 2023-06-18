@@ -1,9 +1,13 @@
-import { type Authentication, type AccountModel, type AuthenticationModel } from '../add-account/db-add-account-protocols'
-import { type LoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository'
-import { type UpdateAccessTokenRepository } from '../../protocols/db/update-access-token-repository'
-import { type TokenGenerator } from '../../protocols/criptography/token-generator'
-import { type HashCompare } from '../../protocols/criptography/hash-compare'
 import { DbAuthentication } from './db-authentication'
+import {
+  type Authentication,
+  type AccountModel,
+  type AuthenticationModel,
+  type LoadAccountByEmailRepository,
+  type UpdateAccessTokenRepository,
+  type TokenGenerator,
+  type HashCompare
+} from './db-authentication-protocols'
 
 const fakeAccountFactory = (): AccountModel => ({
   id: 'any_id',
