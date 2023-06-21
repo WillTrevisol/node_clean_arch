@@ -1,4 +1,4 @@
-import { type Validation } from '../../controllers/signup/signup-protocols'
+import { type Validation } from '../../controllers/signup/signup-controller-protocols'
 import { MissingParameterError } from '../../errors'
 import { ValidationComposite } from './validation-composite'
 

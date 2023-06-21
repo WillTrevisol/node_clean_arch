@@ -1,6 +1,6 @@
 import { MongoHelper } from '../helpers/mongo-helpers'
 import { type Collection } from 'mongodb'
-import { LogMongoRepository } from './log'
+import { LogMongoRepository } from './log-mongo-repository'
 
 const sutFactory = (): LogMongoRepository => {
   return new LogMongoRepository()

@@ -1,5 +1,5 @@
-import { type Controller, type HttpRequest, type HttpResponse } from '../../presentation/controllers/signup/signup-protocols'
-import { type LogErrorRepository } from '../../data/protocols/db/log-error-repository'
+import { type Controller, type HttpRequest, type HttpResponse } from '../../presentation/controllers/signup/signup-controller-protocols'
+import { type LogErrorRepository } from '../../data/protocols/db/log/log-error-repository'
 
 export class LoggerControllerDecorator implements Controller {
   private readonly controller: Controller

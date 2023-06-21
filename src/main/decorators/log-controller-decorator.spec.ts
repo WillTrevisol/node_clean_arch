@@ -1,7 +1,7 @@
 import { type Controller, type HttpRequest, type HttpResponse } from '../../presentation/protocols'
-import { LoggerControllerDecorator } from './log'
+import { LoggerControllerDecorator } from './log-controller-decorator'
 import { ok, serverError } from '../../presentation/helpers/http/http-helper'
-import { type LogErrorRepository } from '../../data/protocols/db/log-error-repository'
+import { type LogErrorRepository } from '../../data/protocols/db/log/log-error-repository'
 import { type AccountModel } from '../../domain/models'
 
 const controllerFactory = (): Controller => {

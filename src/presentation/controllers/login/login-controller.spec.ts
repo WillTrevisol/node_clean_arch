@@ -1,7 +1,7 @@
-import { type HttpRequest, type Authentication, type Validation, type AuthenticationModel } from '../signup/signup-protocols'
+import { type HttpRequest, type Authentication, type Validation, type AuthenticationModel } from '../signup/signup-controller-protocols'
 import { MissingParameterError, ServerError } from '../../errors'
 import { ok, badRequest, serverError, unauthorized } from '../../helpers/http/http-helper'
-import { LoginController } from './login'
+import { LoginController } from './login-controller'
 
 const authenticationStubFactory = (): Authentication => {
   class AuthenticationStub implements Authentication {
