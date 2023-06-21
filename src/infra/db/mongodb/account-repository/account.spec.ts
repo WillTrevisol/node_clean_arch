@@ -1,13 +1,16 @@
 import { MongoHelper } from '../helpers/mongo-helpers'
 import { AccountMongoRepository } from './account'
+import { type Collection } from 'mongodb'
 
 describe('Account Mongo Repository', () => {
+  let accountCollection: Collection
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
   })
 
   beforeEach(async () => {
-    const accountCollection = await MongoHelper.getColletion('accounts')
+    accountCollection = await MongoHelper.getColletion('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -19,7 +22,7 @@ describe('Account Mongo Repository', () => {
     return new AccountMongoRepository()
   }
 
-  test('Should return an account on success', async () => {
+  test('Should return an account on add success', async () => {
     const systemUnderTest = sutFactory()
     const account = await systemUnderTest.add({
       name: 'any_name',
@@ -32,5 +35,43 @@ describe('Account Mongo Repository', () => {
     expect(account.name).toBe('any_name')
     expect(account.email).toBe('any_email@mail.com')
     expect(account.password).toBe('any_password')
+  })
+
+  test('Should return an account on loadByEmail success', async () => {
+    const systemUnderTest = sutFactory()
+    await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+    const account = await systemUnderTest.loadByEmail('any_email@mail.com')
+
+    expect(account).toBeTruthy()
+    expect(account.id).toBeTruthy()
+    expect(account.name).toBe('any_name')
+    expect(account.email).toBe('any_email@mail.com')
+    expect(account.password).toBe('any_password')
+  })
+
+  test('Should return null if loadByEmail fails', async () => {
+    const systemUnderTest = sutFactory()
+    const account = await systemUnderTest.loadByEmail('any_email@mail.com')
+
+    expect(account).toBeFalsy()
+  })
+
+  test('Should update the account accessToken on updateAccessToken success', async () => {
+    const systemUnderTest = sutFactory()
+    const result = await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+    const resultAccount = result.ops[0]
+    expect(resultAccount.accessToken).toBeFalsy()
+    await systemUnderTest.updateAccessToken(resultAccount._id, 'any_token')
+    const account = await accountCollection.findOne({ _id: resultAccount._id })
+    expect(account).toBeTruthy()
+    expect(account.accessToken).toBe('any_token')
   })
 })
