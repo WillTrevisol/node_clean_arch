@@ -23,7 +23,7 @@ const fakeAuthenticationModel = (): AuthenticationModel => ({
 
 const loadAccountByEmailRepositoryFactory = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async load (email: string): Promise<AccountModel> {
+    async loadByEmail (email: string): Promise<AccountModel> {
       return Promise.resolve(fakeAccountFactory())
     }
   }
@@ -50,7 +50,7 @@ const encrypterFactory = (): Encrypter => {
 
 const updateAccessTokenRepositoryFactory = (): UpdateAccessTokenRepository => {
   class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async update (id: string, accessToken: string): Promise<void> {
+    async updateAccessToken (id: string, accessToken: string): Promise<void> {
       return Promise.resolve()
     }
   }
@@ -90,14 +90,14 @@ const sutFactory = (): SutTypes => {
 describe('DbAuthentication UseCase', () => {
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = sutFactory()
-    const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
+    const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
     await systemUnderTest.auth(fakeAuthenticationModel())
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = sutFactory()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockReturnValueOnce(
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(
       Promise.reject(new Error())
     )
     const result = systemUnderTest.auth(fakeAuthenticationModel())
@@ -142,14 +142,14 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should call UpdateAccessTokenRepository with correct values', async () => {
     const { systemUnderTest, updateAccessTokenRepositoryStub } = sutFactory()
-    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken')
     await systemUnderTest.auth(fakeAuthenticationModel())
     expect(updateSpy).toHaveBeenCalledWith('any_id', 'any_token')
   })
 
   test('Should throw if UpdateAccessTokenRepository throws', async () => {
     const { systemUnderTest, updateAccessTokenRepositoryStub } = sutFactory()
-    jest.spyOn(updateAccessTokenRepositoryStub, 'update').mockReturnValueOnce(
+    jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken').mockReturnValueOnce(
       Promise.reject(new Error())
     )
     const result = systemUnderTest.auth(fakeAuthenticationModel())
