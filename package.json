@@ -61,5 +61,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^3.6.3",
     "validator": "^13.9.0"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
