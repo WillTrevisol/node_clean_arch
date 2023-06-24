@@ -1,6 +1,6 @@
-import { type Validation } from '../../controllers/signup/signup-controller-protocols'
-import { MissingParameterError } from '../../errors'
-import { ValidationComposite } from './validation-composite'
+import { type Validation } from '../../../src/presentation/controllers/signup/signup-controller-protocols'
+import { MissingParameterError } from '../../../src/presentation/errors'
+import { ValidationComposite } from '../../../src/presentation/helpers/validators/validation-composite'
 
 interface SutTypes {
   systemUnderTest: ValidationComposite

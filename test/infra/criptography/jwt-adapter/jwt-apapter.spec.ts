@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
-import { JwtAdapter } from './jwt-adapter'
-import { type Encrypter } from '../../../data/protocols/criptography/encrypter'
+import { JwtAdapter } from '../../../../src/infra/criptography/jwt-adapter/jwt-adapter'
+import { type Encrypter } from '../../../../src/data/protocols/criptography/encrypter'
 
 jest.mock('jsonwebtoken', () => ({
   sign: (): string => {

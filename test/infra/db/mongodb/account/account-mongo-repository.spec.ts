@@ -1,5 +1,5 @@
-import { MongoHelper } from '../helpers/mongo-helpers'
-import { AccountMongoRepository } from './account-mongo-repository'
+import { MongoHelper } from '../../../../../src/infra/db/mongodb/helpers/mongo-helpers'
+import { AccountMongoRepository } from '../../../../../src/infra/db/mongodb/account/account-mongo-repository'
 import { type Collection } from 'mongodb'
 
 describe('Account Mongo Repository', () => {

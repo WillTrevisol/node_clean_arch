@@ -1,8 +1,8 @@
-import { type Controller, type HttpRequest, type HttpResponse } from '../../presentation/protocols'
-import { LoggerControllerDecorator } from './log-controller-decorator'
-import { ok, serverError } from '../../presentation/helpers/http/http-helper'
-import { type LogErrorRepository } from '../../data/protocols/db/log/log-error-repository'
-import { type AccountModel } from '../../domain/models'
+import { type Controller, type HttpRequest, type HttpResponse } from '../../../src/presentation/protocols'
+import { LoggerControllerDecorator } from '../../../src/main/decorators/log-controller-decorator'
+import { ok, serverError } from '../../../src/presentation/helpers/http/http-helper'
+import { type LogErrorRepository } from '../../../src/data/protocols/db/log/log-error-repository'
+import { type AccountModel } from '../../../src/domain/models'
 
 const controllerFactory = (): Controller => {
   class ControllerStub implements Controller {

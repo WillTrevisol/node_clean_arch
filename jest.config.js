@@ -18,7 +18,7 @@ module.exports = {
 
   // A list of paths to directories that Jest should use to search for files in
   roots: [
-    '<rootDir>/src'
+    '<rootDir>/test'
   ],
 
   // Indicates whether the coverage information should be collected while executing the test
@@ -36,7 +36,11 @@ module.exports = {
   testEnvironment: 'node',
 
   // A preset that is used as a base for Jest's configuration
-  preset: '@shelf/jest-mongodb'
+  preset: '@shelf/jest-mongodb',
+  moduleNameMapper: {
+    '@/tests/(.*)': '<rootDir>/tests/$1',
+    '@/(.*)': '<rootDir>/src/$1'
+  }
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [

@@ -1,4 +1,4 @@
-import { MongoHelper as systemUnderTest } from './mongo-helpers'
+import { MongoHelper as systemUnderTest } from '../../../../../src/infra/db/mongodb/helpers/mongo-helpers'
 
 describe('Mongo Helper', () => {
   beforeAll(async () => {

@@ -1,5 +1,5 @@
-import { InvalidParameterError } from '../../errors'
-import { CompareFieldsValidation } from './compare-fields-validation'
+import { InvalidParameterError } from '../../../src/presentation/errors'
+import { CompareFieldsValidation } from '../../../src/presentation/helpers/validators/compare-fields-validation'
 
 const systemUnderTestFactory = (): CompareFieldsValidation => {
   return new CompareFieldsValidation('field', 'fieldToCompare')
