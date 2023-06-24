@@ -1,6 +1,6 @@
 import { SignUpController } from './signup-controller'
 import { MissingParameterError, ServerError } from '../../errors'
-import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
+import { ok, serverError, badRequest, forbidden } from '../../helpers/http/http-helper'
 import {
   type AddAccount,
   type AddAccountModel,
@@ -10,6 +10,7 @@ import {
   type Authentication,
   type AuthenticationModel
 } from './signup-controller-protocols'
+import { EmailInUseError } from '../../errors/email-in-use-error'
 
 const authenticationStubFactory = (): Authentication => {
   class AuthenticationStub implements Authentication {
@@ -97,6 +98,13 @@ describe('SignUp Controller', () => {
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
+
+  // test('Should return 403 if AddAccount returns null', async () => {
+  //   const { systemUnderTest, addAccountStub } = sutFactory()
+  //   jest.spyOn(addAccountStub, 'add').mockReturnValue()
+  //   const httpResponse = await systemUnderTest.handle(httpRequestFactory())
+  //   expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
+  // })
 
   test('Should return 200 if valid data is provided', async () => {
     const { systemUnderTest } = sutFactory()
