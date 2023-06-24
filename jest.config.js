@@ -18,13 +18,13 @@ module.exports = {
 
   // A list of paths to directories that Jest should use to search for files in
   roots: [
-    '<rootDir>/test'
+    '<rootDir>/tests'
   ],
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
-    '!<rootDir>/src/main/**/*.ts'
+    '!<rootDir>/src/main/**'
   ],
   coverageDirectory: 'coverage',
   // A map from regular expressions to paths to transformers
