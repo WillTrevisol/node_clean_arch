@@ -99,12 +99,14 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 
-  // test('Should return 403 if AddAccount returns null', async () => {
-  //   const { systemUnderTest, addAccountStub } = sutFactory()
-  //   jest.spyOn(addAccountStub, 'add').mockReturnValue()
-  //   const httpResponse = await systemUnderTest.handle(httpRequestFactory())
-  //   expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
-  // })
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { systemUnderTest, addAccountStub } = sutFactory()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(
+      Promise.resolve(null)
+    )
+    const httpResponse = await systemUnderTest.handle(httpRequestFactory())
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
+  })
 
   test('Should return 200 if valid data is provided', async () => {
     const { systemUnderTest } = sutFactory()
