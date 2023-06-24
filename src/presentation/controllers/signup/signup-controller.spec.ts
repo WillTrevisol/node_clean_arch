@@ -1,7 +1,24 @@
 import { SignUpController } from './signup-controller'
 import { MissingParameterError, ServerError } from '../../errors'
-import { type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest, type Validation } from './signup-controller-protocols'
 import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
+import {
+  type AddAccount,
+  type AddAccountModel,
+  type AccountModel,
+  type HttpRequest,
+  type Validation,
+  type Authentication,
+  type AuthenticationModel
+} from './signup-controller-protocols'
+
+const authenticationStubFactory = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (authentication: AuthenticationModel): Promise<string> {
+      return Promise.resolve('any_token')
+    }
+  }
+  return new AuthenticationStub()
+}
 
 const addAccountFactory = (): AddAccount => {
   class AddAccountStub implements AddAccount {
@@ -43,17 +60,20 @@ interface SutTypes {
   systemUnderTest: SignUpController
   addAccountStub: AddAccount
   validationStub: Validation
+  authenticationStub: Authentication
 }
 
 const sutFactory = (): SutTypes => {
   const addAccountStub = addAccountFactory()
   const validationStub = validationStubFactory()
-  const systemUnderTest = new SignUpController(addAccountStub, validationStub)
+  const authenticationStub = authenticationStubFactory()
+  const systemUnderTest = new SignUpController(addAccountStub, validationStub, authenticationStub)
 
   return {
     systemUnderTest,
     addAccountStub,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
@@ -81,7 +101,7 @@ describe('SignUp Controller', () => {
   test('Should return 200 if valid data is provided', async () => {
     const { systemUnderTest } = sutFactory()
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
-    expect(httpResponse).toEqual(ok(fakeAccountFactory()))
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
   })
 
   test('Should call Validation with correct value', async () => {
@@ -97,5 +117,24 @@ describe('SignUp Controller', () => {
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParameterError('any_field'))
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
     expect(httpResponse).toEqual(badRequest(new MissingParameterError('any_field')))
+  })
+
+  test('Should call Authentication with correct values', async () => {
+    const { systemUnderTest, authenticationStub } = sutFactory()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    await systemUnderTest.handle(httpRequestFactory())
+    expect(authSpy).toBeCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { systemUnderTest, authenticationStub } = sutFactory()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(
+      Promise.reject(new Error())
+    )
+    const httpResponse = await systemUnderTest.handle(httpRequestFactory())
+    expect(httpResponse).toEqual(serverError(new ServerError('any_stack')))
   })
 })
