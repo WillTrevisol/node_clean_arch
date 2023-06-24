@@ -11,14 +11,14 @@ services:
   api:
     container_name: api-container
     image: node:18
-    working_dir: /usr/library/node-clean-arch
+    working_dir: /usr/src/node_clean_arch
     restart: always
-    command: bash -c "npm install --omit=dev && npm run start"
+    command: bash -c "npm install --omit=dev && npm run debug"
     environment:
-      - MONGO_URL=mongodb://mongo:27017/node-clean-arch
+      - MONGO_URL=mongodb://mongo:27017/node_clean_arch
     volumes:
-      - ./dist:/usr/library/node-clean-arch
-      - ./package.json:/usr/library/node-clean-arch/package.json
+      - ./dist/:/usr/src/node_clean_arch/dist/
+      - ./package.json:/usr/src/node_clean_arch/package.json
     ports:
       - "5050:5050"
       - "9222:9222"
