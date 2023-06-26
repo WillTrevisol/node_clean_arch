@@ -1,4 +1,4 @@
-import { Validation, type HttpRequest } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-protocols'
+import { Validation, type HttpRequest, AddSurvey, AddSurveyModel } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-protocols'
 import { AddSurveyController } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-controller'
 import { badRequest } from '../../../../../src/presentation/helpers/http/http-helper'
 
@@ -21,18 +21,30 @@ const validationStubFactory = (): Validation => {
   return new ValidationStub()
 }
 
+const addSurveyStubFactory = (): AddSurvey => {
+  class AddSurveyStub implements AddSurvey {
+    async add (data: AddSurveyModel): Promise<void> {
+      return Promise.resolve()
+    }
+  }
+  return new AddSurveyStub()
+}
+
 interface SutTypes {
   systemUnderTest: AddSurveyController
   validationStub: Validation
+  addSurveyStub: AddSurvey
 }
 
 const sutFactory = (): SutTypes => {
+  const addSurveyStub = addSurveyStubFactory()
   const validationStub = validationStubFactory()
-  const systemUnderTest = new AddSurveyController(validationStub)
+  const systemUnderTest = new AddSurveyController(validationStub, addSurveyStub)
 
   return {
     systemUnderTest,
-    validationStub
+    validationStub,
+    addSurveyStub
   }
 }
 
@@ -50,5 +62,13 @@ describe('AddSurvey Controller', () => {
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
     expect(httpResponse).toEqual(badRequest(new Error()))
+  })
+
+  test('Should call AddSurvey with correct values', async () => {
+    const { systemUnderTest, addSurveyStub } = sutFactory()
+    const addSpy = jest.spyOn(addSurveyStub, 'add')
+    const httpResquest = httpRequestFactory()
+    await systemUnderTest.handle(httpResquest)
+    expect(addSpy).toHaveBeenCalledWith(httpResquest.body)
   })
 })
