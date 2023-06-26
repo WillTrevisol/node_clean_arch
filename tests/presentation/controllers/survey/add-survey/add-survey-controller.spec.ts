@@ -11,16 +11,34 @@ const httpRequestFactory = (): HttpRequest => ({
   }
 })
 
+const validationStubFactory = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (data: any): any {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
+interface SutTypes {
+  systemUnderTest: AddSurveyController
+  validationStub: Validation
+}
+
+const sutFactory = (): SutTypes => {
+  const validationStub = validationStubFactory()
+  const systemUnderTest = new AddSurveyController(validationStub)
+
+  return {
+    systemUnderTest,
+    validationStub
+  }
+}
+
 describe('AddSurvey Controller', () => {
   test('Should call Validation with correct values', async () => {
-    class ValidationStub implements Validation {
-      validate (data: any): any {
-        return null
-      }
-    }
-    const validationStub = new ValidationStub()
+    const { systemUnderTest, validationStub } = sutFactory()
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    const systemUnderTest = new AddSurveyController(validationStub)
     const httpResquest = httpRequestFactory()
     await systemUnderTest.handle(httpResquest)
     expect(validateSpy).toHaveBeenCalledWith(httpResquest.body)
