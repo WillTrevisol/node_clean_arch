@@ -1,6 +1,6 @@
 import { Validation, type HttpRequest, AddSurvey, AddSurveyModel } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-protocols'
 import { AddSurveyController } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-controller'
-import { badRequest, serverError } from '../../../../../src/presentation/helpers/http/http-helper'
+import { badRequest, serverError, noContent } from '../../../../../src/presentation/helpers/http/http-helper'
 
 const httpRequestFactory = (): HttpRequest => ({
   body: {
@@ -79,5 +79,11 @@ describe('AddSurvey Controller', () => {
     )
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { systemUnderTest } = sutFactory()
+    const httpResponse = await systemUnderTest.handle(httpRequestFactory())
+    expect(httpResponse).toEqual(noContent())
   })
 })
