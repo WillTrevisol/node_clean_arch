@@ -1,7 +1,7 @@
 import { EmailValidation, RequiredFieldValidation, ValidationComposite } from '../../../src/validation/validators'
-import { type Validation } from '../../../src/presentation/controllers/signup/signup-controller-protocols'
+import { type Validation } from '../../../src/presentation/controllers/login/login/login-controller-protocols'
 import { type EmailValidator } from '../../../src/../src/validation/protocols/email-validator'
-import { loginValidationFactory } from '../../../src/main/factories/controllers/login/login-validation-factory'
+import { loginValidationFactory } from '../../../src/main/factories/controllers/login/login/login-validation-factory'
 
 jest.mock('../../../src/validation/validators/validation-composite')
 
@@ -14,7 +14,7 @@ const emailValidatorFactory = (): EmailValidator => {
 
   return new EmailValidatorStub()
 }
-describe('Singup Validation', () => {
+describe('Login Validation', () => {
   test('Should call ValidationComposite with all validators', () => {
     loginValidationFactory()
     const validations: Validation[] = []
