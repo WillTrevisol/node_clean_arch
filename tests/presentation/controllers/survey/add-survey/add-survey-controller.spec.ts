@@ -1,5 +1,6 @@
 import { Validation, type HttpRequest } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-protocols'
 import { AddSurveyController } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-controller'
+import { badRequest } from '../../../../../src/presentation/helpers/http/http-helper'
 
 const httpRequestFactory = (): HttpRequest => ({
   body: {
@@ -42,5 +43,12 @@ describe('AddSurvey Controller', () => {
     const httpResquest = httpRequestFactory()
     await systemUnderTest.handle(httpResquest)
     expect(validateSpy).toHaveBeenCalledWith(httpResquest.body)
+  })
+
+  test('Should return 400 if Validation fails', async () => {
+    const { systemUnderTest, validationStub } = sutFactory()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
+    const httpResponse = await systemUnderTest.handle(httpRequestFactory())
+    expect(httpResponse).toEqual(badRequest(new Error()))
   })
 })
