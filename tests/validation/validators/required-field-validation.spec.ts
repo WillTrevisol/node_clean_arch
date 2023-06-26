@@ -1,5 +1,5 @@
 import { MissingParameterError } from '../../../src/presentation/errors'
-import { RequiredFieldValidation } from '../../../src/presentation/helpers/validators/required-field-validation'
+import { RequiredFieldValidation } from '../../../src/validation/validators'
 
 const systemUnderTestFactory = (): RequiredFieldValidation => {
   return new RequiredFieldValidation('field')
