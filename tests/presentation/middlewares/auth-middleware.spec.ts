@@ -32,9 +32,9 @@ interface SutTypes {
   loadAccountByTokenStub: LoadAccountByToken
 }
 
-const sutFactory = (): SutTypes => {
+const sutFactory = (role?: string): SutTypes => {
   const loadAccountByTokenStub = loadAccountByTokenStubFactory()
-  const systemUnderTest = new AuthMiddleware(loadAccountByTokenStub)
+  const systemUnderTest = new AuthMiddleware(loadAccountByTokenStub, role)
 
   return {
     systemUnderTest,
@@ -49,11 +49,12 @@ describe('AuthMiddleware', () => {
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
 
-  test('Should call LoadAccountByToken with correct accessToken', async () => {
-    const { systemUnderTest, loadAccountByTokenStub } = sutFactory()
+  test('Should call LoadAccountByToken with correct correct values', async () => {
+    const role = 'any_role'
+    const { systemUnderTest, loadAccountByTokenStub } = sutFactory(role)
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     await systemUnderTest.handle(fakeHttpRequest())
-    expect(loadSpy).toHaveBeenCalledWith('any_token')
+    expect(loadSpy).toHaveBeenCalledWith('any_token', role)
   })
 
   test('Should return 403 if LoadAccountByToken returns null', async () => {
