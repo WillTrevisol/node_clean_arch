@@ -1,9 +1,7 @@
-import { HttpRequest } from '../../../src/presentation/protocols/http'
+import { HttpRequest, LoadAccountByToken, AccountModel } from '../../../src/presentation/middlewares/auth-middleware-protocols'
 import { ok, forbidden, serverError } from '../../../src/presentation/helpers/http/http-helper'
 import { AccessDeniedError } from '../../../src/presentation/errors'
 import { AuthMiddleware } from '../../../src/presentation/middlewares/auth-middleware'
-import { LoadAccountByToken } from '../../../src/domain/usecases/load-account-by-token'
-import { AccountModel } from '../../../src/domain/models'
 
 const fakeAccountFactory = (): AccountModel => ({
   id: 'valid_id',
