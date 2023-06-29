@@ -35,7 +35,11 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     const accountColletion = await MongoHelper.getColletion('accounts')
     const account = await accountColletion.findOne({
       accessToken: token,
-      role
+      $or: [{
+        role
+      }, {
+        role: 'admin'
+      }]
     })
     return account && MongoHelper.map(account)
   }
