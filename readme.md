@@ -1,3 +1,6 @@
+[![Build Status](https://app.travis-ci.com/WillTrevisol/node_clean_arch.svg?branch=main)](https://app.travis-ci.com/WillTrevisol/node_clean_arch)
+[![Coverage Status](https://coveralls.io/repos/github/WillTrevisol/node_clean_arch/badge.svg?branch=main)](https://coveralls.io/github/WillTrevisol/node_clean_arch?branch=main)
+
 # **Clean Node API**
 
 ---
