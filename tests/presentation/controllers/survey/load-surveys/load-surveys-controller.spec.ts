@@ -23,6 +23,30 @@ const fakeSurveysFactory = (): SurveyModel[] => {
   }]
 }
 
+const loadSurveysStubFactory = (): LoadSurveys => {
+  class LoadSurveysStub implements LoadSurveys {
+    async load (): Promise<SurveyModel[]> {
+      return Promise.resolve(fakeSurveysFactory())
+    }
+  }
+  return new LoadSurveysStub()
+}
+
+interface SutTypes {
+  systemUnderTest: LoadSurveysController
+  loadSurveysStub: LoadSurveys
+}
+
+const sutFactory = (): SutTypes => {
+  const loadSurveysStub = loadSurveysStubFactory()
+  const systemUnderTest = new LoadSurveysController(loadSurveysStub)
+
+  return {
+    systemUnderTest,
+    loadSurveysStub
+  }
+}
+
 describe('LoadSurveys Controller', () => {
   beforeAll(() => {
     MockDate.set(new Date())
@@ -33,14 +57,8 @@ describe('LoadSurveys Controller', () => {
   })
 
   test('Should call LoadSurveys', async () => {
-    class LoadSurveysStub implements LoadSurveys {
-      async load (): Promise<SurveyModel[]> {
-        return Promise.resolve(fakeSurveysFactory())
-      }
-    }
-    const loadSurveysStub = new LoadSurveysStub()
+    const { systemUnderTest, loadSurveysStub } = sutFactory()
     const loadSpy = jest.spyOn(loadSurveysStub, 'load')
-    const systemUnderTest = new LoadSurveysController(loadSurveysStub)
     systemUnderTest.handle({})
     expect(loadSpy).toHaveBeenCalled()
   })
