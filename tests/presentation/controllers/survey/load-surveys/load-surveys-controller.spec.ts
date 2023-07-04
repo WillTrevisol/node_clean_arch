@@ -1,6 +1,7 @@
 import { LoadSurveysController } from '../../../../../src/presentation/controllers/survey/load-surveys/load-surveys-controller'
 import { SurveyModel } from '../../../../../src/domain/models'
 import { LoadSurveys } from '../../../../../src/domain/usecases'
+import { ok } from '../../../../../src/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 
 const fakeSurveysFactory = (): SurveyModel[] => {
@@ -59,7 +60,13 @@ describe('LoadSurveys Controller', () => {
   test('Should call LoadSurveys', async () => {
     const { systemUnderTest, loadSurveysStub } = sutFactory()
     const loadSpy = jest.spyOn(loadSurveysStub, 'load')
-    systemUnderTest.handle({})
+    await systemUnderTest.handle({})
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  test('Should return 200 on success', async () => {
+    const { systemUnderTest } = sutFactory()
+    const httpResponse = await systemUnderTest.handle({})
+    expect(httpResponse).toEqual(ok(fakeSurveysFactory()))
   })
 })
