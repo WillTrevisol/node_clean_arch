@@ -3,6 +3,5 @@ node_js:
   - 18.12.1
 script:
   - eslint 'src/**'
-  - npm run test:coveralls
 dist: focal
-install: travis_wait mvn install
+install: travis_wait npm run test:coveralls
