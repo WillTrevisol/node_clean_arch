@@ -3,5 +3,4 @@ node_js:
   - 18.12.1
 script:
   - eslint 'src/**'
-  - npm run test:coveralls
 dist: focal

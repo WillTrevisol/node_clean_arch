@@ -5,9 +5,29 @@ import app from '../../../src/main/config/app'
 import { MongoHelper } from '../../../src/infra/db/mongodb/helpers/mongo-helpers'
 import { type Collection } from 'mongodb'
 
+let surveyCollection: Collection
+let accountCollection: Collection
+
+const accessTokenFactory = async (): Promise<string> => {
+  const response = await accountCollection.insertOne({
+    name: 'user_name',
+    email: 'mail@gmail.com',
+    password: 'any_password',
+    role: 'admin'
+  })
+  const id = response.ops[0]._id
+  const accessToken = sign({ id }, env.jwtSecret)
+  await accountCollection.updateOne({
+    _id: id
+  }, {
+    $set: {
+      accessToken
+    }
+  })
+  return accessToken
+}
+
 describe('Survey Routes', () => {
-  let surveyCollection: Collection
-  let accountCollection: Collection
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
   })
@@ -40,21 +60,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 with valid token', async () => {
-      const response = await accountCollection.insertOne({
-        name: 'user_name',
-        email: 'mail@gmail.com',
-        password: 'any_password',
-        role: 'admin'
-      })
-      const id = response.ops[0]._id
-      const accessToken = sign({ id }, env.jwtSecret)
-      await accountCollection.updateOne({
-        _id: id
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+      const accessToken = await accessTokenFactory()
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -68,6 +74,23 @@ describe('Survey Routes', () => {
             answer: 'answer 2',
           }]
         })
+        .expect(204)
+    })
+  })
+
+  describe('GET /surveys', () => {
+    test('Should return 403 on load surveys without accessToken', async () => {
+      await request(app)
+        .get('/api/surveys')
+        .expect(403)
+    })
+
+    test('Should return 204 on load surveys with valid token', async () => {
+      const accessToken = await accessTokenFactory()
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
+        .send()
         .expect(204)
     })
   })
