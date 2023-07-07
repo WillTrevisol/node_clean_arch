@@ -2,7 +2,7 @@ import { addSurveyValidationFactory } from '@/main/factories/controllers/survey/
 import { type Validation } from '@/presentation/controllers/login/login/login-controller-protocols'
 import { RequiredFieldValidation, ValidationComposite } from '@/validation/validators'
 
-jest.mock('../../../../../src/validation/validators/validation-composite')
+jest.mock('@/validation/validators/validation-composite')
 
 describe('AddSurvey Validation', () => {
   test('Should call ValidationComposite with all validators', () => {

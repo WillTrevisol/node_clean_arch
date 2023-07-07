@@ -3,7 +3,7 @@ import { type Validation } from '@/presentation/controllers/login/signup/signup-
 import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation, ValidationComposite } from '@/validation/validators'
 import { type EmailValidator } from '@/validation/protocols/email-validator'
 
-jest.mock('../../../../src/validation/validators/validation-composite')
+jest.mock('@/validation/validators/validation-composite')
 
 const emailValidatorFactory = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
