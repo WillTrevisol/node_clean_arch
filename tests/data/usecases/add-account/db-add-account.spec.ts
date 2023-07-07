@@ -43,7 +43,7 @@ const fakeAddAccountFactory = (): AddAccountModel => ({
   password: 'valid_password'
 })
 
-interface sutTypes {
+type sutTypes = {
   systemUnderTest: DbAddAccount
   hasherStub: Hasher
   addAccountRepositoryStub: AddAccountRepository

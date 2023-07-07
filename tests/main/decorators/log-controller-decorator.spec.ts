@@ -46,7 +46,7 @@ const fakeAccountFactory = (): AccountModel => ({
   password: 'valid_password'
 })
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: LoggerControllerDecorator
   controllerStub: Controller
   logErrorRepositoryStub: LogErrorRepository

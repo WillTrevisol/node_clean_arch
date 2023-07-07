@@ -29,7 +29,7 @@ const fakeHttpRequestFactory = (): HttpRequest => ({
   }
 })
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: LoginController
   authenticationStub: Authentication
   validationStub: Validation

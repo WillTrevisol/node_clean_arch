@@ -28,7 +28,7 @@ const decrypterStubFactory = (): Decrypter => {
   return new DecrypterStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: DbLoadAccountByToken
   decrypterStub: Decrypter
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository

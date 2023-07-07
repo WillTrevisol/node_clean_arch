@@ -58,7 +58,7 @@ const updateAccessTokenRepositoryFactory = (): UpdateAccessTokenRepository => {
   return new UpdateAccessTokenRepositoryStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: Authentication
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashCompareStub: HashCompare

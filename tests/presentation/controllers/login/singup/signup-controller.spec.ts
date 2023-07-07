@@ -57,7 +57,7 @@ const fakeAccountFactory = (): AccountModel => ({
   password: 'valid_password'
 })
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: SignUpController
   addAccountStub: AddAccount
   validationStub: Validation
