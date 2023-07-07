@@ -32,7 +32,7 @@ const addSurveyStubFactory = (): AddSurvey => {
   return new AddSurveyStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: AddSurveyController
   validationStub: Validation
   addSurveyStub: AddSurvey

@@ -33,7 +33,7 @@ const loadSurveysStubFactory = (): LoadSurveys => {
   return new LoadSurveysStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: LoadSurveysController
   loadSurveysStub: LoadSurveys
 }

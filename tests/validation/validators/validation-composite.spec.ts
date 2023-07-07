@@ -2,7 +2,7 @@ import { type Validation } from '@/presentation/controllers/login/signup/signup-
 import { MissingParameterError } from '@/presentation/errors'
 import { ValidationComposite } from '@/validation/validators'
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: ValidationComposite
   validationStubs: Validation[]
 }

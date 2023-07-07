@@ -22,7 +22,7 @@ const addSurveyRepositoryStubFactory = (): AddSurveyRepository => {
   return new AddSurveyRepositoryStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: DbAddSurvey
   addSurveyRepositoryStub: AddSurveyRepository
 }

@@ -25,7 +25,7 @@ const loadAccountByTokenStubFactory = (): LoadAccountByToken => {
   return new LoadAccountByTokenStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: AuthMiddleware
   loadAccountByTokenStub: LoadAccountByToken
 }

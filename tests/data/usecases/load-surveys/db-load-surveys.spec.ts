@@ -32,7 +32,7 @@ const loadSurveysRepositoryStubFactory = (): LoadSurveysRepository => {
   return new LoadSurveysRepositoryStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: DbLoadSurveys
   loadSurveysRepositoryStub: LoadSurveysRepository
 }

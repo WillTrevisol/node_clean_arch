@@ -12,7 +12,7 @@ const emailValidatorFactory = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   systemUnderTest: EmailValidation
   emailValidatorStub: EmailValidator
 }
