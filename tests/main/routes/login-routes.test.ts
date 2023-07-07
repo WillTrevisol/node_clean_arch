@@ -1,7 +1,7 @@
-import request from 'supertest'
-import app from '../../../src/main/config/app'
-import { MongoHelper } from '../../../src/infra/db/mongodb/helpers/mongo-helpers'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
+import app from '@/main/config/app'
 import { type Collection } from 'mongodb'
+import request from 'supertest'
 import { hash } from 'bcrypt'
 
 describe('Login Routes', () => {

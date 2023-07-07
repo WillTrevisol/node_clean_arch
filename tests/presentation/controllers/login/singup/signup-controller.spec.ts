@@ -1,6 +1,7 @@
-import { SignUpController } from '../../../../../src/presentation/controllers/login/signup/signup-controller'
-import { MissingParameterError, ServerError } from '../../../../../src/presentation/errors'
-import { ok, serverError, badRequest, forbidden } from '../../../../../src/presentation/helpers/http/http-helper'
+import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
+import { SignUpController } from '@/presentation/controllers/login/signup/signup-controller'
+import { MissingParameterError, ServerError } from '@/presentation/errors'
+import { EmailInUseError } from '@/presentation/errors/email-in-use-error'
 import {
   type AddAccount,
   type AddAccountModel,
@@ -9,8 +10,7 @@ import {
   type Validation,
   type Authentication,
   type AuthenticationModel
-} from '../../../../../src/presentation/controllers/login/signup/signup-controller-protocols'
-import { EmailInUseError } from '../../../../../src/presentation/errors/email-in-use-error'
+} from '@/presentation/controllers/login/signup/signup-controller-protocols'
 
 const authenticationStubFactory = (): Authentication => {
   class AuthenticationStub implements Authentication {

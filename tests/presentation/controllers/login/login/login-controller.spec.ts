@@ -1,7 +1,7 @@
-import { type HttpRequest, type Authentication, type Validation, type AuthenticationModel } from '../../../../../src/presentation/controllers/login/signup/signup-controller-protocols'
-import { MissingParameterError, ServerError } from '../../../../../src/presentation/errors'
-import { ok, badRequest, serverError, unauthorized } from '../../../../../src/presentation/helpers/http/http-helper'
-import { LoginController } from '../../../../../src/presentation/controllers/login/login/login-controller'
+import { type HttpRequest, type Authentication, type Validation, type AuthenticationModel } from '@/presentation/controllers/login/signup/signup-controller-protocols'
+import { ok, badRequest, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
+import { LoginController } from '@/presentation/controllers/login/login/login-controller'
+import { MissingParameterError, ServerError } from '@/presentation/errors'
 
 const authenticationStubFactory = (): Authentication => {
   class AuthenticationStub implements Authentication {

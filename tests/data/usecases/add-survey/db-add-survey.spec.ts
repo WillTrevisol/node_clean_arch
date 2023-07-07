@@ -1,8 +1,7 @@
-import { AddSurveyRepository } from '../../../../src/data/usecases/add-survey/db-add-survey-protocols'
-import { AddSurveyModel } from '../../../../src/domain/usecases'
-import { DbAddSurvey } from '../../../../src/data/usecases/add-survey/db-add-survey'
+import { type AddSurveyRepository } from '@/data/usecases/add-survey/db-add-survey-protocols'
+import { DbAddSurvey } from '@/data/usecases/add-survey/db-add-survey'
+import { type AddSurveyModel } from '@/domain/usecases'
 import MockDate from 'mockdate'
-
 
 const fakeSurveyFactory = (): AddSurveyModel => ({
   question: 'any_question',
@@ -39,7 +38,6 @@ const sutFactory = (): SutTypes => {
 }
 
 describe('DbAddSurvey UseCase', () => {
-
   beforeAll(() => {
     MockDate.set(new Date())
   })

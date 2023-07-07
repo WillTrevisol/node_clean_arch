@@ -1,9 +1,9 @@
-import { SignUpController } from '../../../../../presentation/controllers/login/signup/signup-controller'
-import { type Controller } from '../../../../../presentation/controllers/login/signup/signup-controller-protocols'
+import { dbAuthenticationFactory } from '@/main/factories/usecases/account/authentication/db-authentication-factory'
+import { loggerControllerDecoratorFactory } from '@/main/factories/decorators/logger-controller-decorator-factory'
+import { dbAddAccountFactory } from '@/main/factories/usecases/account/add-account/db-add-account-factory'
+import { SignUpController } from '@/presentation/controllers/login/signup/signup-controller'
+import { type Controller } from '@/presentation/controllers/login/signup/signup-controller-protocols'
 import { singupValidationFactory } from './signup-validation-factory'
-import { dbAuthenticationFactory } from '../../../usecases/account/authentication/db-authentication-factory'
-import { dbAddAccountFactory } from '../../../usecases/account/add-account/db-add-account-factory'
-import { loggerControllerDecoratorFactory } from '../../../decorators/logger-controller-decorator-factory'
 
 export const signupControllerFactory = (): Controller => {
   return loggerControllerDecoratorFactory(

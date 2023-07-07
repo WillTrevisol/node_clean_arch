@@ -1,7 +1,7 @@
-import { type Controller } from '../../../../../presentation/protocols'
-import { loggerControllerDecoratorFactory } from '../../../decorators/logger-controller-decorator-factory'
-import { LoadSurveysController } from '../../../../../presentation/controllers/survey/load-surveys/load-surveys-controller'
-import { dbLoadSurveysFactory } from '../../../usecases/survey/load-surveys/db-load-surveys-factory'
+import { loggerControllerDecoratorFactory } from '@/main/factories/decorators/logger-controller-decorator-factory'
+import { dbLoadSurveysFactory } from '@/main/factories/usecases/survey/load-surveys/db-load-surveys-factory'
+import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys/load-surveys-controller'
+import { type Controller } from '@/presentation/protocols'
 
 export const loadSurveysControllerFactory = (): Controller => {
   return loggerControllerDecoratorFactory(

@@ -1,9 +1,9 @@
-import request from 'supertest'
-import { sign } from 'jsonwebtoken'
-import env from '../../../src/main/config/env'
-import app from '../../../src/main/config/app'
-import { MongoHelper } from '../../../src/infra/db/mongodb/helpers/mongo-helpers'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
+import env from '@/main/config/env'
+import app from '@/main/config/app'
 import { type Collection } from 'mongodb'
+import { sign } from 'jsonwebtoken'
+import request from 'supertest'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -53,7 +53,7 @@ describe('Survey Routes', () => {
             image: 'http://image.com'
           },
           {
-            answer: 'answer 2',
+            answer: 'answer 2'
           }]
         })
         .expect(403)
@@ -71,7 +71,7 @@ describe('Survey Routes', () => {
             image: 'http://image.com'
           },
           {
-            answer: 'answer 2',
+            answer: 'answer 2'
           }]
         })
         .expect(204)
