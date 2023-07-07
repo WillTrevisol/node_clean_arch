@@ -1,7 +1,7 @@
-import { LoadSurveysController } from '../../../../../src/presentation/controllers/survey/load-surveys/load-surveys-controller'
-import { SurveyModel } from '../../../../../src/domain/models'
-import { LoadSurveys } from '../../../../../src/domain/usecases'
-import { ok, noContent, serverError } from '../../../../../src/presentation/helpers/http/http-helper'
+import { type LoadSurveys } from '@/domain/usecases'
+import { type SurveyModel } from '@/domain/models'
+import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys/load-surveys-controller'
+import { ok, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 
 const fakeSurveysFactory = (): SurveyModel[] => {
@@ -82,7 +82,7 @@ describe('LoadSurveys Controller', () => {
   test('Should return 500 if LoadSurveys throws', async () => {
     const { systemUnderTest, loadSurveysStub } = sutFactory()
     jest.spyOn(loadSurveysStub, 'load').mockReturnValueOnce(
-      Promise.reject(new Error)
+      Promise.reject(new Error())
     )
     const httpResponse = await systemUnderTest.handle({})
     expect(httpResponse).toEqual(serverError(new Error()))

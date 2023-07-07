@@ -1,6 +1,6 @@
-import { Validation, type HttpRequest, AddSurvey, AddSurveyModel } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-protocols'
-import { AddSurveyController } from '../../../../../src/presentation/controllers/survey/add-survey/add-survey-controller'
-import { badRequest, serverError, noContent } from '../../../../../src/presentation/helpers/http/http-helper'
+import { type Validation, type HttpRequest, type AddSurvey, type AddSurveyModel } from '@/presentation/controllers/survey/add-survey/add-survey-protocols'
+import { AddSurveyController } from '@/presentation/controllers/survey/add-survey/add-survey-controller'
+import { badRequest, serverError, noContent } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 
 const httpRequestFactory = (): HttpRequest => ({
@@ -85,7 +85,7 @@ describe('AddSurvey Controller', () => {
   test('Should return 500 if AddSurvey throws', async () => {
     const { systemUnderTest, addSurveyStub } = sutFactory()
     jest.spyOn(addSurveyStub, 'add').mockReturnValueOnce(
-      Promise.reject(new Error)
+      Promise.reject(new Error())
     )
     const httpResponse = await systemUnderTest.handle(httpRequestFactory())
     expect(httpResponse).toEqual(serverError(new Error()))

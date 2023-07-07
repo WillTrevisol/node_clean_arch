@@ -1,7 +1,7 @@
-import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation, ValidationComposite } from '../../../../src/validation/validators'
-import { type Validation } from '../../../../src/presentation/controllers/login/signup/signup-controller-protocols'
-import { type EmailValidator } from '../../../../src/validation/protocols/email-validator'
-import { singupValidationFactory } from '../../../../src/main/factories/controllers/login/singup/signup-validation-factory'
+import { singupValidationFactory } from '@/main/factories/controllers/login/singup/signup-validation-factory'
+import { type Validation } from '@/presentation/controllers/login/signup/signup-controller-protocols'
+import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation, ValidationComposite } from '@/validation/validators'
+import { type EmailValidator } from '@/validation/protocols/email-validator'
 
 jest.mock('../../../../src/validation/validators/validation-composite')
 

@@ -1,5 +1,5 @@
-import { MongoHelper } from '../../../../../src/infra/db/mongodb/helpers/mongo-helpers'
-import { SurveyMongoRepository } from '../../../../../src/infra/db/mongodb/survey/survey-mongo-repository'
+import { SurveyMongoRepository } from '@/infra/db/mongodb/survey/survey-mongo-repository'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
 import { type Collection } from 'mongodb'
 import MockDate from 'mockdate'
 
@@ -39,13 +39,13 @@ describe('Survey Mongo Repository', () => {
         }],
         date: new Date()
       })
-  
+
       const survey = await surveyCollection.findOne({ question: 'any_question' })
       expect(survey).toBeTruthy()
     })
   })
 
-  describe('loadAll()', () => { 
+  describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
       await surveyCollection.insertMany([{
         question: 'any_question',

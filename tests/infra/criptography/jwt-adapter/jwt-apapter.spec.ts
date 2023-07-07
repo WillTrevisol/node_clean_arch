@@ -1,7 +1,5 @@
+import { JwtAdapter } from '@/infra/criptography/jwt-adapter/jwt-adapter'
 import jwt from 'jsonwebtoken'
-import { JwtAdapter } from '../../../../src/infra/criptography/jwt-adapter/jwt-adapter'
-import { type Encrypter } from '../../../../src/data/protocols/criptography/encrypter'
-import { verify } from 'crypto'
 
 jest.mock('jsonwebtoken', () => ({
   sign: (): string => {
@@ -33,13 +31,13 @@ describe('Jwt Adapter', () => {
       await systemUnderTest.encrypt('any_id')
       expect(signSpy).toHaveBeenCalledWith({ id: 'any_id' }, 'secret')
     })
-  
+
     test('Should return a token o sing success', async () => {
       const { systemUnderTest } = sutFactory()
       const accessToken = await systemUnderTest.encrypt('any_id')
       expect(accessToken).toBe('any_token')
     })
-  
+
     test('Should throw if sign throws', async () => {
       const { systemUnderTest } = sutFactory()
       jest.spyOn(jwt, 'sign').mockImplementationOnce(
@@ -57,7 +55,7 @@ describe('Jwt Adapter', () => {
       await systemUnderTest.decrypt('any_token')
       expect(verifySpy).toHaveBeenCalledWith('any_token', 'secret')
     })
-      
+
     test('Should return a value on verify success', async () => {
       const { systemUnderTest } = sutFactory()
       const value = await systemUnderTest.decrypt('any_token')

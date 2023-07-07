@@ -1,5 +1,5 @@
-import { MongoHelper } from '../../../../../src/infra/db/mongodb/helpers/mongo-helpers'
-import { AccountMongoRepository } from '../../../../../src/infra/db/mongodb/account/account-mongo-repository'
+import { AccountMongoRepository } from '@/infra/db/mongodb/account/account-mongo-repository'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
 import { type Collection } from 'mongodb'
 
 describe('Account Mongo Repository', () => {
@@ -30,7 +30,7 @@ describe('Account Mongo Repository', () => {
         email: 'any_email@mail.com',
         password: 'any_password'
       })
-  
+
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe('any_name')
@@ -48,18 +48,17 @@ describe('Account Mongo Repository', () => {
         password: 'any_password'
       })
       const account = await systemUnderTest.loadByEmail('any_email@mail.com')
-  
+
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
       expect(account.name).toBe('any_name')
       expect(account.email).toBe('any_email@mail.com')
       expect(account.password).toBe('any_password')
     })
-  
+
     test('Should return null if loadByEmail fails', async () => {
       const systemUnderTest = sutFactory()
       const account = await systemUnderTest.loadByEmail('any_email@mail.com')
-  
       expect(account).toBeFalsy()
     })
   })
@@ -91,7 +90,7 @@ describe('Account Mongo Repository', () => {
         accessToken: 'any_token'
       })
       const account = await systemUnderTest.loadByToken('any_token')
-  
+
       expect(account).toBeTruthy()
       expect(account?.id).toBeTruthy()
       expect(account?.name).toBe('any_name')
@@ -109,7 +108,7 @@ describe('Account Mongo Repository', () => {
         role: 'admin'
       })
       const account = await systemUnderTest.loadByToken('any_token', 'admin')
-  
+
       expect(account).toBeTruthy()
       expect(account?.id).toBeTruthy()
       expect(account?.name).toBe('any_name')
@@ -126,7 +125,7 @@ describe('Account Mongo Repository', () => {
         accessToken: 'any_token'
       })
       const account = await systemUnderTest.loadByToken('any_token', 'admin')
-  
+
       expect(account).toBeFalsy()
     })
 
@@ -140,7 +139,7 @@ describe('Account Mongo Repository', () => {
         role: 'admin'
       })
       const account = await systemUnderTest.loadByToken('any_token')
-  
+
       expect(account).toBeTruthy()
       expect(account?.id).toBeTruthy()
       expect(account?.name).toBe('any_name')
@@ -151,7 +150,7 @@ describe('Account Mongo Repository', () => {
     test('Should return null if loadByToken fails', async () => {
       const systemUnderTest = sutFactory()
       const account = await systemUnderTest.loadByEmail('any_token')
-  
+
       expect(account).toBeFalsy()
     })
   })
