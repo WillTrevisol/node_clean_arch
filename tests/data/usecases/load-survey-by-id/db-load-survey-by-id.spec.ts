@@ -56,7 +56,14 @@ describe('DbLoadSurveyById', () => {
 
   test('Should return a survey on success', async () => {
     const { systemUnderTest } = sutFactory()
-    const surveys = await systemUnderTest.loadById('any_id')
-    expect(surveys).toEqual(fakeSurveyFactory())
+    const survey = await systemUnderTest.loadById('any_id')
+    expect(survey).toEqual(fakeSurveyFactory())
+  })
+
+  test('Should throw if LoadSurveyByIdRepository throws', async () => {
+    const { systemUnderTest, loadSurveyByIdRepositoryStub } = sutFactory()
+    jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById').mockRejectedValueOnce(new Error())
+    const promise = systemUnderTest.loadById('any_id')
+    await expect(promise).rejects.toThrow()
   })
 })
