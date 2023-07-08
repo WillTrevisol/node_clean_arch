@@ -58,4 +58,17 @@ describe('DbSaveSurveyResult UseCase', () => {
     await systemUnderTest.save(saveSurveyResultModel)
     expect(saveSpy).toHaveBeenCalledWith(saveSurveyResultModel)
   })
+
+  test('Should throw if SaveSurveyResultRepository throws', async () => {
+    const { systemUnderTest, saveSurveyResultRepositoryStub } = sutFactory()
+    jest.spyOn(saveSurveyResultRepositoryStub, 'save').mockRejectedValueOnce(new Error())
+    const result = systemUnderTest.save(fakeSaveSurveyResultModelFactory())
+    await expect(result).rejects.toThrow()
+  })
+
+  test('Should return a survey result on success', async () => {
+    const { systemUnderTest } = sutFactory()
+    const surveyResult = await systemUnderTest.save(fakeSaveSurveyResultModelFactory())
+    expect(surveyResult).toEqual(fakeSurveyResultFactory())
+  })
 })
