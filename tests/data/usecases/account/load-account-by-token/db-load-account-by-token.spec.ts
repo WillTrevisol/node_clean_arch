@@ -1,6 +1,6 @@
 import { type AccountModel } from '@/domain/models'
 import { type LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
-import { DbLoadAccountByToken } from '@/data/usecases/load-account-by-token/db-load-account-by-token'
+import { DbLoadAccountByToken } from '@/data/usecases/account/load-account-by-token/db-load-account-by-token'
 import { type Decrypter } from '@/data/protocols/criptography/decrypter'
 
 const fakeAccountFactory = (): AccountModel => ({

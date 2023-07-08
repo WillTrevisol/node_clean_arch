@@ -1,5 +1,5 @@
-import { type SurveyResultModel, type SaveSurveyResultRepository, type SaveSurveyResultModel } from '@/data/usecases/save-survey-result/db-save-survey-result-protocols'
-import { DbSaveSurveyResult } from '@/data/usecases/save-survey-result/db-save-survey-result'
+import { type SurveyResultModel, type SaveSurveyResultRepository, type SaveSurveyResultModel } from '@/data/usecases/survey-result/save-survey-result/db-save-survey-result-protocols'
+import { DbSaveSurveyResult } from '@/data/usecases/survey-result/save-survey-result/db-save-survey-result'
 import MockDate from 'mockdate'
 
 const fakeSurveyResultFactory = (): SurveyResultModel => ({
