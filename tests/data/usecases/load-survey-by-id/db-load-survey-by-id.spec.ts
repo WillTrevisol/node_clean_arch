@@ -53,4 +53,10 @@ describe('DbLoadSurveyById', () => {
     await systemUnderTest.loadById('any_id')
     expect(loadByIdSpy).toHaveBeenCalledWith('any_id')
   })
+
+  test('Should return a survey on success', async () => {
+    const { systemUnderTest } = sutFactory()
+    const surveys = await systemUnderTest.loadById('any_id')
+    expect(surveys).toEqual(fakeSurveyFactory())
+  })
 })
