@@ -1,6 +1,6 @@
 import { type LoadSurveyById, type SurveyModel, type HttpRequest } from '@/presentation/controllers/survey-result//save-survey-result-controller-protocols'
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result-controller'
-import { forbidden } from '@/presentation/helpers/http/http-helper'
+import { forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { InvalidParameterError } from '@/presentation/errors'
 import MockDate from 'mockdate'
 
@@ -66,5 +66,12 @@ describe('SaveSurveyResult Controller', () => {
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockResolvedValueOnce(null)
     const httpResponse = await systemUnderTest.handle(fakeRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParameterError('surveyId')))
+  })
+
+  test('Should return 500 if LoadSurveyById throws', async () => {
+    const { systemUnderTest, loadSurveyByIdStub } = sutFactory()
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockRejectedValueOnce(new Error())
+    const httpResponse = await systemUnderTest.handle(fakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
