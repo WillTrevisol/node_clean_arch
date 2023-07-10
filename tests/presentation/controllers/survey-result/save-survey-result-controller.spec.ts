@@ -7,6 +7,9 @@ import MockDate from 'mockdate'
 const fakeRequest = (): HttpRequest => ({
   params: {
     surveyId: 'any_survey_id'
+  },
+  body: {
+    answer: 'any_answer'
   }
 })
 
@@ -73,5 +76,18 @@ describe('SaveSurveyResult Controller', () => {
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockRejectedValueOnce(new Error())
     const httpResponse = await systemUnderTest.handle(fakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 403 if an invalid answer is provided', async () => {
+    const { systemUnderTest } = sutFactory()
+    const httpResponse = await systemUnderTest.handle({
+      params: {
+        surveyId: 'any_survey_id'
+      },
+      body: {
+        answer: 'invalid_answer'
+      }
+    })
+    expect(httpResponse).toEqual(forbidden(new InvalidParameterError('answer')))
   })
 })
