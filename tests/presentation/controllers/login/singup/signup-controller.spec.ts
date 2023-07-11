@@ -4,17 +4,17 @@ import { MissingParameterError, ServerError } from '@/presentation/errors'
 import { EmailInUseError } from '@/presentation/errors/email-in-use-error'
 import {
   type AddAccount,
-  type AddAccountModel,
+  type AddAccounParams,
   type AccountModel,
   type HttpRequest,
   type Validation,
   type Authentication,
-  type AuthenticationModel
+  type AuthenticationParams
 } from '@/presentation/controllers/login/signup/signup-controller-protocols'
 
 const authenticationStubFactory = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationParams): Promise<string> {
       return Promise.resolve('any_token')
     }
   }
@@ -23,7 +23,7 @@ const authenticationStubFactory = (): Authentication => {
 
 const addAccountFactory = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccounParams): Promise<AccountModel> {
       return Promise.resolve(fakeAccountFactory())
     }
   }

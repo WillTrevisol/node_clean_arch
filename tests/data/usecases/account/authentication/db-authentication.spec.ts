@@ -2,7 +2,7 @@ import { DbAuthentication } from '@/data/usecases/account/authentication/db-auth
 import {
   type Authentication,
   type AccountModel,
-  type AuthenticationModel,
+  type AuthenticationParams,
   type LoadAccountByEmailRepository,
   type UpdateAccessTokenRepository,
   type Encrypter,
@@ -16,7 +16,7 @@ const fakeAccountFactory = (): AccountModel => ({
   password: 'hashed_password'
 })
 
-const fakeAuthenticationModel = (): AuthenticationModel => ({
+const fakeAuthenticationParams = (): AuthenticationParams => ({
   email: 'any_email@mail.com',
   password: 'any_password'
 })
@@ -91,7 +91,7 @@ describe('DbAuthentication UseCase', () => {
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = sutFactory()
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
-    await systemUnderTest.auth(fakeAuthenticationModel())
+    await systemUnderTest.auth(fakeAuthenticationParams())
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
@@ -100,28 +100,28 @@ describe('DbAuthentication UseCase', () => {
     jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(
       Promise.reject(new Error())
     )
-    const result = systemUnderTest.auth(fakeAuthenticationModel())
+    const result = systemUnderTest.auth(fakeAuthenticationParams())
     await expect(result).rejects.toThrow()
   })
 
   test('Should call HashCompare with correct password', async () => {
     const { systemUnderTest, hashCompareStub } = sutFactory()
     const compareSpy = jest.spyOn(hashCompareStub, 'compare')
-    await systemUnderTest.auth(fakeAuthenticationModel())
+    await systemUnderTest.auth(fakeAuthenticationParams())
     expect(compareSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
   })
 
   test('Should return null if HashCompare returns false', async () => {
     const { systemUnderTest, hashCompareStub } = sutFactory()
     jest.spyOn(hashCompareStub, 'compare').mockResolvedValueOnce(false)
-    const accessToken = await systemUnderTest.auth(fakeAuthenticationModel())
+    const accessToken = await systemUnderTest.auth(fakeAuthenticationParams())
     expect(accessToken).toBeFalsy()
   })
 
   test('Should call  with correct id', async () => {
     const { systemUnderTest, encrypterStub } = sutFactory()
     const generateSpy = jest.spyOn(encrypterStub, 'encrypt')
-    await systemUnderTest.auth(fakeAuthenticationModel())
+    await systemUnderTest.auth(fakeAuthenticationParams())
     expect(generateSpy).toHaveBeenCalledWith('any_id')
   })
 
@@ -130,20 +130,20 @@ describe('DbAuthentication UseCase', () => {
     jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(
       Promise.reject(new Error())
     )
-    const result = systemUnderTest.auth(fakeAuthenticationModel())
+    const result = systemUnderTest.auth(fakeAuthenticationParams())
     await expect(result).rejects.toThrow()
   })
 
   test('Should return AccessToken on success', async () => {
     const { systemUnderTest } = sutFactory()
-    const accessToken = await systemUnderTest.auth(fakeAuthenticationModel())
+    const accessToken = await systemUnderTest.auth(fakeAuthenticationParams())
     expect(accessToken).toBe('any_token')
   })
 
   test('Should call UpdateAccessTokenRepository with correct values', async () => {
     const { systemUnderTest, updateAccessTokenRepositoryStub } = sutFactory()
     const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken')
-    await systemUnderTest.auth(fakeAuthenticationModel())
+    await systemUnderTest.auth(fakeAuthenticationParams())
     expect(updateSpy).toHaveBeenCalledWith('any_id', 'any_token')
   })
 
@@ -152,7 +152,7 @@ describe('DbAuthentication UseCase', () => {
     jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken').mockReturnValueOnce(
       Promise.reject(new Error())
     )
-    const result = systemUnderTest.auth(fakeAuthenticationModel())
+    const result = systemUnderTest.auth(fakeAuthenticationParams())
     await expect(result).rejects.toThrow()
   })
 })

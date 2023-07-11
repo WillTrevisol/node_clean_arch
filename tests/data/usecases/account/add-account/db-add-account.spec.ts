@@ -1,9 +1,9 @@
-import { type AddAccountModel, type AccountModel, type Hasher, type AddAccountRepository, type LoadAccountByEmailRepository } from '@/data/usecases/account/add-account/db-add-account-protocols'
+import { type AddAccounParams, type AccountModel, type Hasher, type AddAccountRepository, type LoadAccountByEmailRepository } from '@/data/usecases/account/add-account/db-add-account-protocols'
 import { DbAddAccount } from '@/data/usecases/account/add-account/db-add-account'
 
 const addAccountRepositoryFactory = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (accountData: AddAccountModel): Promise<AccountModel> {
+    async add (accountData: AddAccounParams): Promise<AccountModel> {
       return Promise.resolve(fakeAccountFactory())
     }
   }
@@ -37,7 +37,7 @@ const fakeAccountFactory = (): AccountModel => ({
   password: 'hashed_value'
 })
 
-const fakeAddAccountFactory = (): AddAccountModel => ({
+const fakeAddAccountFactory = (): AddAccounParams => ({
   name: 'valid_name',
   email: 'valid_email@mail.com',
   password: 'valid_password'

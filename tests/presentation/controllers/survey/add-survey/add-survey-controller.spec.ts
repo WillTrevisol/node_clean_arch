@@ -1,4 +1,4 @@
-import { type Validation, type HttpRequest, type AddSurvey, type AddSurveyModel } from '@/presentation/controllers/survey/add-survey/add-survey-protocols'
+import { type Validation, type HttpRequest, type AddSurvey, type AddSurveyParams } from '@/presentation/controllers/survey/add-survey/add-survey-protocols'
 import { AddSurveyController } from '@/presentation/controllers/survey/add-survey/add-survey-controller'
 import { badRequest, serverError, noContent } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
@@ -25,7 +25,7 @@ const validationStubFactory = (): Validation => {
 
 const addSurveyStubFactory = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
-    async add (data: AddSurveyModel): Promise<void> {
+    async add (data: AddSurveyParams): Promise<void> {
       return Promise.resolve()
     }
   }
