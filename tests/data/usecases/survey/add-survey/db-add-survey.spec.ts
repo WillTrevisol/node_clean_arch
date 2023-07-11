@@ -56,9 +56,7 @@ describe('DbAddSurvey UseCase', () => {
 
   test('Should throw if AddSurveyRepository throws', async () => {
     const { systemUnderTest, addSurveyRepositoryStub } = sutFactory()
-    jest.spyOn(addSurveyRepositoryStub, 'add').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(addSurveyRepositoryStub, 'add').mockRejectedValueOnce(new Error())
     const promise = systemUnderTest.add(fakeSurveyFactory())
     await expect(promise).rejects.toThrow()
   })

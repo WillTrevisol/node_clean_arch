@@ -97,9 +97,7 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = sutFactory()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockRejectedValueOnce(new Error())
     const result = systemUnderTest.auth(fakeAuthenticationParams())
     await expect(result).rejects.toThrow()
   })
@@ -127,9 +125,7 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should throw if Encrypter throws', async () => {
     const { systemUnderTest, encrypterStub } = sutFactory()
-    jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(new Error())
     const result = systemUnderTest.auth(fakeAuthenticationParams())
     await expect(result).rejects.toThrow()
   })
@@ -149,9 +145,7 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should throw if UpdateAccessTokenRepository throws', async () => {
     const { systemUnderTest, updateAccessTokenRepositoryStub } = sutFactory()
-    jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken').mockRejectedValueOnce(new Error())
     const result = systemUnderTest.auth(fakeAuthenticationParams())
     await expect(result).rejects.toThrow()
   })

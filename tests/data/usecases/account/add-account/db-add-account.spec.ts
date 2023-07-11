@@ -1,10 +1,11 @@
 import { type AddAccounParams, type AccountModel, type Hasher, type AddAccountRepository, type LoadAccountByEmailRepository } from '@/data/usecases/account/add-account/db-add-account-protocols'
 import { DbAddAccount } from '@/data/usecases/account/add-account/db-add-account'
+import { mockAccountModel, mockAddAccountParams } from '@/tests/domain/mocks'
 
 const addAccountRepositoryFactory = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
     async add (accountData: AddAccounParams): Promise<AccountModel> {
-      return Promise.resolve(fakeAccountFactory())
+      return Promise.resolve(mockAccountModel())
     }
   }
 
@@ -29,19 +30,6 @@ const hasherFactory = (): Hasher => {
 
   return new HasherStub()
 }
-
-const fakeAccountFactory = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_value'
-})
-
-const fakeAddAccountFactory = (): AddAccounParams => ({
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'valid_password'
-})
 
 type sutTypes = {
   systemUnderTest: DbAddAccount
@@ -68,58 +56,54 @@ describe('DbAddAccount Usecase', () => {
   test('Should call Hasher with correct password', async () => {
     const { systemUnderTest, hasherStub } = sutFactory()
     const hashpSpy = jest.spyOn(hasherStub, 'hash')
-    await systemUnderTest.add(fakeAddAccountFactory())
-    expect(hashpSpy).toHaveBeenCalledWith('valid_password')
+    await systemUnderTest.add(mockAddAccountParams())
+    expect(hashpSpy).toHaveBeenCalledWith('any_password')
   })
 
   test('Should throw if Hasher throws', async () => {
     const { systemUnderTest, hasherStub } = sutFactory()
-    jest.spyOn(hasherStub, 'hash').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
-    const promise = systemUnderTest.add(fakeAddAccountFactory())
+    jest.spyOn(hasherStub, 'hash').mockRejectedValueOnce(new Error())
+    const promise = systemUnderTest.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow()
   })
 
   test('Should add AddAccountRepository with correct values', async () => {
     const { systemUnderTest, addAccountRepositoryStub } = sutFactory()
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add')
-    await systemUnderTest.add(fakeAddAccountFactory())
+    await systemUnderTest.add(mockAddAccountParams())
     expect(addSpy).toHaveBeenCalledWith({
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
+      name: 'any_name',
+      email: 'any_email@mail.com',
       password: 'hashed_value'
     })
   })
 
   test('Should throw if AddAccountRepository throws', async () => {
     const { systemUnderTest, addAccountRepositoryStub } = sutFactory()
-    jest.spyOn(addAccountRepositoryStub, 'add').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
-    const promise = systemUnderTest.add(fakeAddAccountFactory())
+    jest.spyOn(addAccountRepositoryStub, 'add').mockRejectedValueOnce(new Error())
+    const promise = systemUnderTest.add(mockAddAccountParams())
     await expect(promise).rejects.toThrow()
   })
 
   test('Should return an account on sucess', async () => {
     const { systemUnderTest } = sutFactory()
-    const account = await systemUnderTest.add(fakeAddAccountFactory())
-    expect(account).toEqual(fakeAccountFactory())
+    const account = await systemUnderTest.add(mockAddAccountParams())
+    expect(account).toEqual(mockAccountModel())
   })
 
   test('Should return null if LoadAccountByEmailRepository not return null', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = sutFactory()
     jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockReturnValueOnce(
-      Promise.resolve(fakeAccountFactory())
+      Promise.resolve(mockAccountModel())
     )
-    const account = await systemUnderTest.add(fakeAddAccountFactory())
+    const account = await systemUnderTest.add(mockAddAccountParams())
     expect(account).toBeNull()
   })
 
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
     const { systemUnderTest, loadAccountByEmailRepositoryStub } = sutFactory()
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
-    await systemUnderTest.add(fakeAddAccountFactory())
-    expect(loadSpy).toHaveBeenCalledWith('valid_email@mail.com')
+    await systemUnderTest.add(mockAddAccountParams())
+    expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 })

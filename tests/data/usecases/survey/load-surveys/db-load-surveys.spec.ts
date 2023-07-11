@@ -71,9 +71,7 @@ describe('DbLoadSurveys', () => {
 
   test('Should throw if LoadSurveysRepository throws', async () => {
     const { systemUnderTest, loadSurveysRepositoryStub } = sutFactory()
-    jest.spyOn(loadSurveysRepositoryStub, 'loadAll').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(loadSurveysRepositoryStub, 'loadAll').mockRejectedValueOnce(new Error())
     const result = systemUnderTest.load()
     await expect(result).rejects.toThrow()
   })
