@@ -1,23 +1,14 @@
-import { type HttpRequest, type LoadAccountByToken, type AccountModel } from '@/presentation/middlewares/auth-middleware-protocols'
+import { type HttpRequest, type LoadAccountByToken } from '@/presentation/middlewares/auth-middleware-protocols'
 import { ok, forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 import { AccessDeniedError } from '@/presentation/errors'
-import { mockAccountModel } from '@/tests/domain/mocks'
+import { mockLoadAccountByToken } from '@/tests/presentation/mocks'
 
-const fakeHttpRequest = (): HttpRequest => ({
+const mockHttpRequest = (): HttpRequest => ({
   headers: {
     'x-access-token': 'any_token'
   }
 })
-
-const loadAccountByTokenStubFactory = (): LoadAccountByToken => {
-  class LoadAccountByTokenStub implements LoadAccountByToken {
-    async load (accessToken: string, role?: string): Promise<AccountModel | null> {
-      return Promise.resolve(mockAccountModel())
-    }
-  }
-  return new LoadAccountByTokenStub()
-}
 
 type SutTypes = {
   systemUnderTest: AuthMiddleware
@@ -25,7 +16,7 @@ type SutTypes = {
 }
 
 const sutFactory = (role?: string): SutTypes => {
-  const loadAccountByTokenStub = loadAccountByTokenStubFactory()
+  const loadAccountByTokenStub = mockLoadAccountByToken()
   const systemUnderTest = new AuthMiddleware(loadAccountByTokenStub, role)
 
   return {
@@ -45,27 +36,27 @@ describe('AuthMiddleware', () => {
     const role = 'any_role'
     const { systemUnderTest, loadAccountByTokenStub } = sutFactory(role)
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
-    await systemUnderTest.handle(fakeHttpRequest())
+    await systemUnderTest.handle(mockHttpRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_token', role)
   })
 
   test('Should return 403 if LoadAccountByToken returns null', async () => {
     const { systemUnderTest, loadAccountByTokenStub } = sutFactory()
     jest.spyOn(loadAccountByTokenStub, 'load').mockResolvedValueOnce(null)
-    const httpResponse = await systemUnderTest.handle(fakeHttpRequest())
+    const httpResponse = await systemUnderTest.handle(mockHttpRequest())
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
 
   test('Should return 200 if LoadAccountByToken returns an account', async () => {
     const { systemUnderTest } = sutFactory()
-    const httpResponse = await systemUnderTest.handle(fakeHttpRequest())
+    const httpResponse = await systemUnderTest.handle(mockHttpRequest())
     expect(httpResponse).toEqual(ok({ accountId: 'any_id' }))
   })
 
   test('Should return 500 if LoadAccountByToken throws', async () => {
     const { systemUnderTest, loadAccountByTokenStub } = sutFactory()
     jest.spyOn(loadAccountByTokenStub, 'load').mockRejectedValueOnce(new Error())
-    const httpResponse = await systemUnderTest.handle(fakeHttpRequest())
+    const httpResponse = await systemUnderTest.handle(mockHttpRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

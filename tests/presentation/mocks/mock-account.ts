@@ -1,0 +1,30 @@
+import { type AccountModel } from '@/domain/models'
+import { type AddAccounParams, type AddAccount, type Authentication, type AuthenticationParams, type LoadAccountByToken } from '@/domain/usecases'
+import { mockAccountModel } from '@/tests/domain/mocks'
+
+export const mockAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async add (account: AddAccounParams): Promise<AccountModel> {
+      return Promise.resolve(mockAccountModel())
+    }
+  }
+  return new AddAccountStub()
+}
+
+export const mockAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (authentication: AuthenticationParams): Promise<string> {
+      return Promise.resolve('any_token')
+    }
+  }
+  return new AuthenticationStub()
+}
+
+export const mockLoadAccountByToken = (): LoadAccountByToken => {
+  class LoadAccountByTokenStub implements LoadAccountByToken {
+    async load (accessToken: string, role?: string): Promise<AccountModel | null> {
+      return Promise.resolve(mockAccountModel())
+    }
+  }
+  return new LoadAccountByTokenStub()
+}
