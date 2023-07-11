@@ -8,13 +8,8 @@ import {
   type Encrypter,
   type HashCompare
 } from '@/data/usecases/account/authentication/db-authentication-protocols'
-
-const fakeAccountFactory = (): AccountModel => ({
-  id: 'any_id',
-  name: 'any_name',
-  email: 'any_email@mail.com',
-  password: 'hashed_password'
-})
+import { mockEncrypter, mockHashCompare } from '@/tests/data/mocks'
+import { mockAccountModel } from '@/tests/domain/mocks'
 
 const fakeAuthenticationParams = (): AuthenticationParams => ({
   email: 'any_email@mail.com',
@@ -24,28 +19,10 @@ const fakeAuthenticationParams = (): AuthenticationParams => ({
 const loadAccountByEmailRepositoryFactory = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
     async loadByEmail (email: string): Promise<AccountModel> {
-      return Promise.resolve(fakeAccountFactory())
+      return Promise.resolve(mockAccountModel())
     }
   }
   return new LoadAccountByEmailRepositoryStub()
-}
-
-const hashCompareFactory = (): HashCompare => {
-  class HashCompareStub implements HashCompare {
-    async compare (value: string, hash: string): Promise<boolean> {
-      return Promise.resolve(true)
-    }
-  }
-  return new HashCompareStub()
-}
-
-const encrypterFactory = (): Encrypter => {
-  class EncrypterStub implements Encrypter {
-    async encrypt (value: string): Promise<string> {
-      return Promise.resolve('any_token')
-    }
-  }
-  return new EncrypterStub()
 }
 
 const updateAccessTokenRepositoryFactory = (): UpdateAccessTokenRepository => {
@@ -68,8 +45,8 @@ type SutTypes = {
 
 const sutFactory = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = loadAccountByEmailRepositoryFactory()
-  const hashCompareStub = hashCompareFactory()
-  const encrypterStub = encrypterFactory()
+  const hashCompareStub = mockHashCompare()
+  const encrypterStub = mockEncrypter()
   const updateAccessTokenRepositoryStub = updateAccessTokenRepositoryFactory()
   const systemUnderTest = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
@@ -106,7 +83,7 @@ describe('DbAuthentication UseCase', () => {
     const { systemUnderTest, hashCompareStub } = sutFactory()
     const compareSpy = jest.spyOn(hashCompareStub, 'compare')
     await systemUnderTest.auth(fakeAuthenticationParams())
-    expect(compareSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
+    expect(compareSpy).toHaveBeenCalledWith('any_password', 'hashed_value')
   })
 
   test('Should return null if HashCompare returns false', async () => {

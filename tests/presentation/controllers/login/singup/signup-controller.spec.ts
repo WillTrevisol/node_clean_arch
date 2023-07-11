@@ -11,6 +11,7 @@ import {
   type Authentication,
   type AuthenticationParams
 } from '@/presentation/controllers/login/signup/signup-controller-protocols'
+import { mockAccountModel } from '@/tests/domain/mocks'
 
 const authenticationStubFactory = (): Authentication => {
   class AuthenticationStub implements Authentication {
@@ -24,7 +25,7 @@ const authenticationStubFactory = (): Authentication => {
 const addAccountFactory = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccounParams): Promise<AccountModel> {
-      return Promise.resolve(fakeAccountFactory())
+      return Promise.resolve(mockAccountModel())
     }
   }
 
@@ -48,13 +49,6 @@ const httpRequestFactory = (): HttpRequest => ({
     password: 'any_password',
     passwordConfirmation: 'any_password'
   }
-})
-
-const fakeAccountFactory = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email',
-  password: 'valid_password'
 })
 
 type SutTypes = {
