@@ -65,6 +65,7 @@ describe('Survey Mongo Repository', () => {
       const systemUnderTest = sutFactory()
       const surveys = await systemUnderTest.loadAll()
       expect(surveys.length).toBe(2)
+      expect(surveys[0].id).toBeTruthy()
       expect(surveys[0].question).toBe('any_question')
       expect(surveys[1].question).toBe('another_question')
     })
@@ -73,6 +74,23 @@ describe('Survey Mongo Repository', () => {
       const systemUnderTest = sutFactory()
       const surveys = await systemUnderTest.loadAll()
       expect(surveys.length).toBe(0)
+    })
+  })
+
+  describe('loadById()', () => {
+    test('Should load survey by id on success', async () => {
+      const response = await surveyCollection.insertOne({
+        question: 'any_question',
+        answers: [{
+          image: 'any_image',
+          answer: 'any_ answer'
+        }],
+        date: new Date()
+      })
+      const systemUnderTest = sutFactory()
+      const survey = await systemUnderTest.loadById(response.ops[0]._id)
+      expect(survey).toBeTruthy()
+      expect(survey?.id).toBeTruthy()
     })
   })
 })

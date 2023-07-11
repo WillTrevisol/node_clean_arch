@@ -1,5 +1,5 @@
-import { type AddAccountModel, type AccountModel, type Hasher, type AddAccountRepository, type LoadAccountByEmailRepository } from '@/data/usecases/add-account/db-add-account-protocols'
-import { DbAddAccount } from '@/data/usecases/add-account/db-add-account'
+import { type AddAccountModel, type AccountModel, type Hasher, type AddAccountRepository, type LoadAccountByEmailRepository } from '@/data/usecases/account/add-account/db-add-account-protocols'
+import { DbAddAccount } from '@/data/usecases/account/add-account/db-add-account'
 
 const addAccountRepositoryFactory = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
