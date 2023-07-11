@@ -6,7 +6,7 @@ import {
   type Encrypter,
   type HashCompare
 } from '@/data/usecases/account/authentication/db-authentication-protocols'
-import { mockAccountByEmailRepository, mockEncrypter, mockHashCompare, mockUpdateAccessTokenRepository } from '@/tests/data/mocks'
+import { mockLoadAccountByEmailRepository, mockEncrypter, mockHashCompare, mockUpdateAccessTokenRepository } from '@/tests/data/mocks'
 import { mockAuthenticationParams } from '@/tests/domain/mocks'
 
 type SutTypes = {
@@ -18,7 +18,7 @@ type SutTypes = {
 }
 
 const sutFactory = (): SutTypes => {
-  const loadAccountByEmailRepositoryStub = mockAccountByEmailRepository()
+  const loadAccountByEmailRepositoryStub = mockLoadAccountByEmailRepository()
   const hashCompareStub = mockHashCompare()
   const encrypterStub = mockEncrypter()
   const updateAccessTokenRepositoryStub = mockUpdateAccessTokenRepository()
