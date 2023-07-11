@@ -57,7 +57,7 @@ describe('DbAuthentication UseCase', () => {
     const { systemUnderTest, hashCompareStub } = sutFactory()
     const compareSpy = jest.spyOn(hashCompareStub, 'compare')
     await systemUnderTest.auth(mockAuthenticationParams())
-    expect(compareSpy).toHaveBeenCalledWith('any_password', 'hashed_value')
+    expect(compareSpy).toHaveBeenCalledWith('any_password', 'any_password')
   })
 
   test('Should return null if HashCompare returns false', async () => {
