@@ -1,32 +1,8 @@
-import { type AccountModel } from '@/domain/models'
 import { type LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 import { DbLoadAccountByToken } from '@/data/usecases/account/load-account-by-token/db-load-account-by-token'
 import { type Decrypter } from '@/data/protocols/criptography/decrypter'
-
-const fakeAccountFactory = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_value'
-})
-
-const loadAccountByTokenRepositoryStubFactory = (): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken (token: string, role?: string): Promise<AccountModel | null> {
-      return Promise.resolve(fakeAccountFactory())
-    }
-  }
-  return new LoadAccountByTokenRepositoryStub()
-}
-
-const decrypterStubFactory = (): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    async decrypt (value: string): Promise<string | null> {
-      return Promise.resolve('any_value')
-    }
-  }
-  return new DecrypterStub()
-}
+import { mockAccountModel } from '@/tests/domain/mocks'
+import { mockDecrypter, mockLoadAccountByTokenRepository } from '@/tests/data/mocks'
 
 type SutTypes = {
   systemUnderTest: DbLoadAccountByToken
@@ -35,8 +11,8 @@ type SutTypes = {
 }
 
 const sutFactory = (): SutTypes => {
-  const loadAccountByTokenRepositoryStub = loadAccountByTokenRepositoryStubFactory()
-  const decrypterStub = decrypterStubFactory()
+  const loadAccountByTokenRepositoryStub = mockLoadAccountByTokenRepository()
+  const decrypterStub = mockDecrypter()
   const systemUnderTest = new DbLoadAccountByToken(decrypterStub, loadAccountByTokenRepositoryStub)
 
   return {
@@ -78,23 +54,19 @@ describe('DbLoadAccountByToken UseCase', () => {
   test('Should return an account on success', async () => {
     const { systemUnderTest } = sutFactory()
     const account = await systemUnderTest.load('any_token', 'any_role')
-    expect(account).toEqual(fakeAccountFactory())
+    expect(account).toEqual(mockAccountModel())
   })
 
   test('Should throw if Decrypter throws', async () => {
     const { systemUnderTest, decrypterStub } = sutFactory()
-    jest.spyOn(decrypterStub, 'decrypt').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(decrypterStub, 'decrypt').mockRejectedValueOnce(new Error())
     const promise = systemUnderTest.load('any_token', 'any_role')
     await expect(promise).rejects.toThrow()
   })
 
   test('Should throw if LoadAccountByTokenRepository throws', async () => {
     const { systemUnderTest, loadAccountByTokenRepositoryStub } = sutFactory()
-    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockRejectedValueOnce(new Error())
     const promise = systemUnderTest.load('any_token', 'any_role')
     await expect(promise).rejects.toThrow()
   })

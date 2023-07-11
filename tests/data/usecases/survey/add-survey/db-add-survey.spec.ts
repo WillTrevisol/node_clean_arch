@@ -1,26 +1,8 @@
 import { type AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
 import { DbAddSurvey } from '@/data/usecases/survey/add-survey/db-add-survey'
-import { type AddSurveyModel } from '@/domain/usecases'
+import { mockAddSurveyRepository } from '@/tests/data/mocks/mock-db-survey'
+import { mockAddSurveyParams } from '@/tests/domain/mocks'
 import MockDate from 'mockdate'
-
-const fakeSurveyFactory = (): AddSurveyModel => ({
-  question: 'any_question',
-  answers: [{
-    image: 'any_image',
-    answer: 'any_answer'
-  }],
-  date: new Date()
-})
-
-const addSurveyRepositoryStubFactory = (): AddSurveyRepository => {
-  class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (surveyData: AddSurveyModel): Promise<void> {
-      return Promise.resolve()
-    }
-  }
-
-  return new AddSurveyRepositoryStub()
-}
 
 type SutTypes = {
   systemUnderTest: DbAddSurvey
@@ -28,7 +10,7 @@ type SutTypes = {
 }
 
 const sutFactory = (): SutTypes => {
-  const addSurveyRepositoryStub = addSurveyRepositoryStubFactory()
+  const addSurveyRepositoryStub = mockAddSurveyRepository()
   const systemUnderTest = new DbAddSurvey(addSurveyRepositoryStub)
 
   return {
@@ -49,17 +31,15 @@ describe('DbAddSurvey UseCase', () => {
   test('Should call AddSurveyRepository with correct values', async () => {
     const { systemUnderTest, addSurveyRepositoryStub } = sutFactory()
     const addSpy = jest.spyOn(addSurveyRepositoryStub, 'add')
-    const surveyData = fakeSurveyFactory()
+    const surveyData = mockAddSurveyParams()
     await systemUnderTest.add(surveyData)
     expect(addSpy).toHaveBeenCalledWith(surveyData)
   })
 
   test('Should throw if AddSurveyRepository throws', async () => {
     const { systemUnderTest, addSurveyRepositoryStub } = sutFactory()
-    jest.spyOn(addSurveyRepositoryStub, 'add').mockReturnValueOnce(
-      Promise.reject(new Error())
-    )
-    const promise = systemUnderTest.add(fakeSurveyFactory())
+    jest.spyOn(addSurveyRepositoryStub, 'add').mockRejectedValueOnce(new Error())
+    const promise = systemUnderTest.add(mockAddSurveyParams())
     await expect(promise).rejects.toThrow()
   })
 })

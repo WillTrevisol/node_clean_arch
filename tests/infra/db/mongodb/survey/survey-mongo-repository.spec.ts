@@ -51,14 +51,14 @@ describe('Survey Mongo Repository', () => {
         question: 'any_question',
         answers: [{
           image: 'any_image',
-          answer: 'any_ answer'
+          answer: 'any_answer'
         }],
         date: new Date()
       }, {
         question: 'another_question',
         answers: [{
           image: 'another_image',
-          answer: 'another_ answer'
+          answer: 'another_answer'
         }],
         date: new Date()
       }])
