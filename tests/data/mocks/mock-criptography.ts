@@ -1,6 +1,7 @@
-import { type Hasher } from '@/data/usecases/account/add-account/db-add-account-protocols'
-import { type Decrypter } from '@/data/usecases/account/load-account-by-token/db-add-account-protocols'
-import { type HashCompare, type Encrypter } from '@/data/usecases/account/authentication/db-authentication-protocols'
+import { type Hasher } from '@/data/protocols/criptography/hasher'
+import { type Decrypter } from '@/data/protocols/criptography/decrypter'
+import { type Encrypter } from '@/data/protocols/criptography/encrypter'
+import { type HashCompare } from '@/data/protocols/criptography/hash-compare'
 
 export const mockHasher = (): Hasher => {
   class HasherStub implements Hasher {

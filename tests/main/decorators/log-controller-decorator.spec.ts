@@ -3,6 +3,7 @@ import { LoggerControllerDecorator } from '@/main/decorators/log-controller-deco
 import { type Controller, type HttpRequest, type HttpResponse } from '@/presentation/protocols'
 import { ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { mockAccountModel } from '@/tests/domain/mocks'
+import { mockLogErrorRepository } from '@/tests/data/mocks'
 
 const controllerFactory = (): Controller => {
   class ControllerStub implements Controller {
@@ -12,16 +13,6 @@ const controllerFactory = (): Controller => {
   }
 
   return new ControllerStub()
-}
-
-const logErrorRepositoryFactory = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
-    async logError (stackTrace: string): Promise<void> {
-
-    }
-  }
-
-  return new LogErrorRepositoryStub()
 }
 
 const fakeServerErrorFactory = (): HttpResponse => {
@@ -47,7 +38,7 @@ type SutTypes = {
 
 const sutFactory = (): SutTypes => {
   const controllerStub = controllerFactory()
-  const logErrorRepositoryStub = logErrorRepositoryFactory()
+  const logErrorRepositoryStub = mockLogErrorRepository()
   const systemUnderTest = new LoggerControllerDecorator(controllerStub, logErrorRepositoryStub)
 
   return {

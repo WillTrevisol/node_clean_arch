@@ -2,6 +2,7 @@ import { type LoadSurveyById, type SurveyModel, type HttpRequest, type SaveSurve
 import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result-controller'
 import { ok, forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { InvalidParameterError } from '@/presentation/errors'
+import { mockSurveyModel } from '@/tests/domain/mocks'
 import MockDate from 'mockdate'
 
 const fakeRequest = (): HttpRequest => ({
@@ -12,16 +13,6 @@ const fakeRequest = (): HttpRequest => ({
     answer: 'any_answer'
   },
   accountId: 'any_account_id'
-})
-
-const fakeSurveyModel = (): SurveyModel => ({
-  id: 'any_id',
-  question: 'any_question',
-  answers: [{
-    image: 'any_image',
-    answer: 'any_answer'
-  }],
-  date: new Date()
 })
 
 const fakeSurveyResultModel = (): SurveyResultModel => ({
@@ -35,7 +26,7 @@ const fakeSurveyResultModel = (): SurveyResultModel => ({
 const loadSurveyByIdFactory = (): LoadSurveyById => {
   class LoadSurveyByIdStub implements LoadSurveyById {
     async loadById (id: string): Promise<SurveyModel | null> {
-      return Promise.resolve(fakeSurveyModel())
+      return Promise.resolve(mockSurveyModel())
     }
   }
 

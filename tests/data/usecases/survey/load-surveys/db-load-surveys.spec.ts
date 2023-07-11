@@ -1,36 +1,8 @@
-import { type SurveyModel } from '@/domain/models'
 import { type LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
 import { DbLoadSurveys } from '@/data/usecases/survey/load-surveys/db-load-surveys'
+import { mockLoadSurveysRepository } from '@/tests/data/mocks/mock-db-survey'
+import { mockSurveyModelList } from '@/tests/domain/mocks'
 import MockDate from 'mockdate'
-
-const fakeSurveysFactory = (): SurveyModel[] => {
-  return [{
-    id: 'any_id',
-    question: 'any_question',
-    answers: [{
-      image: 'any_image',
-      answer: 'any_answer'
-    }],
-    date: new Date()
-  }, {
-    id: 'another_id',
-    question: 'another_question',
-    answers: [{
-      image: 'another_image',
-      answer: 'another_answer'
-    }],
-    date: new Date()
-  }]
-}
-
-const loadSurveysRepositoryStubFactory = (): LoadSurveysRepository => {
-  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (): Promise<SurveyModel[]> {
-      return Promise.resolve(fakeSurveysFactory())
-    }
-  }
-  return new LoadSurveysRepositoryStub()
-}
 
 type SutTypes = {
   systemUnderTest: DbLoadSurveys
@@ -38,7 +10,7 @@ type SutTypes = {
 }
 
 const sutFactory = (): SutTypes => {
-  const loadSurveysRepositoryStub = loadSurveysRepositoryStubFactory()
+  const loadSurveysRepositoryStub = mockLoadSurveysRepository()
   const systemUnderTest = new DbLoadSurveys(loadSurveysRepositoryStub)
 
   return {
@@ -66,7 +38,7 @@ describe('DbLoadSurveys', () => {
   test('Should return a surveys list on success', async () => {
     const { systemUnderTest } = sutFactory()
     const surveys = await systemUnderTest.load()
-    expect(surveys).toEqual(fakeSurveysFactory())
+    expect(surveys).toEqual(mockSurveyModelList())
   })
 
   test('Should throw if LoadSurveysRepository throws', async () => {
