@@ -17,10 +17,10 @@ const fakeSurvey = async (): Promise<SurveyModel> => {
     question: 'any_question',
     answers: [{
       image: 'any_image',
-      answer: 'any_ answer'
+      answer: 'any_answer'
     }, {
       image: 'another_image',
-      answer: 'another_ answer'
+      answer: 'another_answer'
     }],
     date: new Date()
   })
