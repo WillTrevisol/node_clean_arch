@@ -1,6 +1,6 @@
-import { loginPath } from './paths/login-path'
-import { loginParamsSchema } from './schemas'
-import { accountSchema } from './schemas/account-schema'
+import { badRequest, notFound, serverError, unauthorized } from '@/main/docs/components'
+import { accountSchema, errorSchema, loginParamsSchema } from '@/main/docs/schemas'
+import { loginPath } from '@/main/docs/paths'
 
 export default {
   openapi: '3.0.0',
@@ -8,6 +8,10 @@ export default {
     title: 'Node Clean Arch',
     description: 'API feita no curso do Manguinho, para realizar enquetes entre programadores\n Aluno: Willian Trevisol',
     version: '1.6.1'
+  },
+  lisence: {
+    name: 'ISC',
+    url: 'https://opensource.org/license/isc-license-txt/'
   },
   servers: [
     {
@@ -24,6 +28,13 @@ export default {
   },
   schemas: {
     account: accountSchema,
-    loginParams: loginParamsSchema
+    loginParams: loginParamsSchema,
+    error: errorSchema
+  },
+  components: {
+    badRequest,
+    unauthorized,
+    serverError,
+    notFound
   }
 }
