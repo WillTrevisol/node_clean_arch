@@ -32,7 +32,7 @@ export const surveyPath = {
       apiKeyAuth: []
     }],
     tags: ['Enquete'],
-    summary: 'API criar um enquete',
+    summary: 'API criar uma enquete',
     requestBody: {
       content: {
         'application/json': {
