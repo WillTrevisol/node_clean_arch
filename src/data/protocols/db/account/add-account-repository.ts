@@ -1,5 +1,5 @@
-import { type AddAccounParams } from '@/domain/usecases/account/add-account'
+import { type AddAccountParams } from '@/domain/usecases/account/add-account'
 
 export interface AddAccountRepository {
-  add: (accountData: AddAccounParams) => Promise<any>
+  add: (accountData: AddAccountParams) => Promise<any>
 }
