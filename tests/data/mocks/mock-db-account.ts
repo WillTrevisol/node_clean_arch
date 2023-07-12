@@ -4,11 +4,11 @@ import { type UpdateAccessTokenRepository } from '@/data/protocols/db/account/up
 import { type LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 import { type LoadAccountByEmailRepository } from '@/data/protocols/db/account/load-account-by-email-repository'
 import { type AccountModel } from '@/domain/models'
-import { type AddAccounParams } from '@/domain/usecases'
+import { type AddAccountParams } from '@/domain/usecases'
 
 export const mockAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (accountData: AddAccounParams): Promise<AccountModel> {
+    async add (accountData: AddAccountParams): Promise<AccountModel> {
       return Promise.resolve(mockAccountModel())
     }
   }
