@@ -9,9 +9,9 @@ export const surveyResultAnswerSchema = {
     count: {
       type: 'number'
     },
-    percentage: {
+    percent: {
       type: 'number'
     }
   },
-  required: ['answer', 'count', 'percentage']
+  required: ['answer', 'count', 'percent']
 }
