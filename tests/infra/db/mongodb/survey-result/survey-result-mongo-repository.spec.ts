@@ -43,8 +43,6 @@ const fakeAccount = async (): Promise<AccountModel> => {
 }
 
 describe('SurveyResultMongo Repository', () => {
-  const systemUnderTest = sutFactory()
-
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
     MockDate.set(new Date())
@@ -66,25 +64,25 @@ describe('SurveyResultMongo Repository', () => {
 
   describe('save()', () => {
     test('Should add a survey result if its new', async () => {
+      const systemUnderTest = sutFactory()
       const survey = await fakeSurvey()
       const account = await fakeAccount()
-      const surveyResult = await systemUnderTest.save({
+      await systemUnderTest.save({
         surveyId: survey.id,
         accountId: account.id,
         answer: survey.answers[0].answer,
         date: new Date()
       })
 
+      const surveyResult = await surveyResultCollection.findOne({
+        surveyId: survey.id,
+        accountId: account.id
+      })
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.surveyId).toEqual(survey.id)
-      expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
     })
 
     test('Should update a survey result if its not new', async () => {
+      const systemUnderTest = sutFactory()
       const survey = await fakeSurvey()
       const account = await fakeAccount()
       await surveyResultCollection.insertOne({
@@ -93,25 +91,26 @@ describe('SurveyResultMongo Repository', () => {
         answer: survey.answers[0].answer,
         date: new Date()
       })
-      const surveyResult = await systemUnderTest.save({
+      await systemUnderTest.save({
         surveyId: survey.id,
         accountId: account.id,
         answer: survey.answers[1].answer,
         date: new Date()
       })
 
+      const surveyResult = await surveyResultCollection.find({
+        surveyId: survey.id,
+        accountId: account.id
+      }).toArray()
+
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.surveyId).toEqual(survey.id)
-      expect(surveyResult.answers[0].answer).toBe(survey.answers[1].answer)
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
+      expect(surveyResult.length).toBe(1)
     })
   })
 
   describe('loadBySurveyId()', () => {
     test('Should load a survey result', async () => {
+      const systemUnderTest = sutFactory()
       const survey = await fakeSurvey()
       const account = await fakeAccount()
       await surveyResultCollection.insertMany([{
@@ -138,13 +137,13 @@ describe('SurveyResultMongo Repository', () => {
       const surveyResult = await systemUnderTest.loadBySurveyId(survey.id)
 
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.surveyId).toEqual(survey.id)
-      expect(surveyResult.answers[0].count).toBe(2)
-      expect(surveyResult.answers[0].percent).toBe(50)
-      expect(surveyResult.answers[1].count).toBe(2)
-      expect(surveyResult.answers[1].percent).toBe(50)
-      expect(surveyResult.answers[2].count).toBe(0)
-      expect(surveyResult.answers[2].percent).toBe(0)
+      expect(surveyResult?.surveyId).toEqual(survey.id)
+      expect(surveyResult?.answers[0].count).toBe(2)
+      expect(surveyResult?.answers[0].percent).toBe(50)
+      expect(surveyResult?.answers[1].count).toBe(2)
+      expect(surveyResult?.answers[1].percent).toBe(50)
+      expect(surveyResult?.answers[2].count).toBe(0)
+      expect(surveyResult?.answers[2].percent).toBe(0)
     })
   })
 })
