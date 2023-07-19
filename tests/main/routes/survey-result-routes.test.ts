@@ -4,6 +4,7 @@ import app from '@/main/config/app'
 import { type Collection } from 'mongodb'
 import { sign } from 'jsonwebtoken'
 import request from 'supertest'
+import MockDate from 'mockdate'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -29,6 +30,7 @@ const accessTokenFactory = async (): Promise<string> => {
 describe('SurveyResult Routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
+    MockDate.set(new Date())
   })
 
   beforeEach(async () => {
@@ -40,6 +42,7 @@ describe('SurveyResult Routes', () => {
 
   afterAll(async () => {
     await MongoHelper.disconnect()
+    MockDate.reset()
   })
 
   describe('PUT /surveys/:surveyId/results', () => {
@@ -79,6 +82,24 @@ describe('SurveyResult Routes', () => {
       await request(app)
         .get('/api/surveys/any_id/results')
         .expect(403)
+    })
+
+    test('Should return 200 on load survey result with accessToken', async () => {
+      const accessToken = await accessTokenFactory()
+      const response = await surveyCollection.insertOne({
+        question: 'question',
+        answers: [{
+          answer: 'answer',
+          image: 'http://image.com'
+        },{
+          answer: 'answer 2'
+        }],
+        date: new Date()
+      })
+      await request(app)
+        .get(`/api/surveys/${response.ops[0]._id}/results`)
+        .set('x-access-token', accessToken)
+        .expect(200)
     })
   })
 })
