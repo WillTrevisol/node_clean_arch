@@ -3,6 +3,7 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helpers'
 import { type AccountModel, type SurveyModel } from '@/domain/models'
 import { type Collection } from 'mongodb'
 import MockDate from 'mockdate'
+import { ObjectId } from 'mongodb'
 
 let surveyCollection: Collection
 let surveyResultCollection: Collection
@@ -17,15 +18,18 @@ const fakeSurvey = async (): Promise<SurveyModel> => {
     question: 'any_question',
     answers: [{
       image: 'any_image',
-      answer: 'any_answer'
+      answer: 'any_answer_1'
     }, {
-      image: 'another_image',
-      answer: 'another_answer'
+      image: 'any_image',
+      answer: 'any_answer_2'
+    }, {
+      image: 'any_image',
+      answer: 'any_answer_3'
     }],
     date: new Date()
   })
 
-  return response.ops[0]
+  return MongoHelper.map(response.ops[0])
 }
 
 const fakeAccount = async (): Promise<AccountModel> => {
@@ -35,7 +39,7 @@ const fakeAccount = async (): Promise<AccountModel> => {
     password: 'any_password'
   })
 
-  return response.ops[0]
+  return MongoHelper.map(response.ops[0])
 }
 
 describe('SurveyResultMongo Repository', () => {
@@ -45,11 +49,11 @@ describe('SurveyResultMongo Repository', () => {
   })
 
   beforeEach(async () => {
-    surveyCollection = await MongoHelper.getColletion('surveys')
+    surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
-    surveyResultCollection = await MongoHelper.getColletion('surveyResults')
+    surveyResultCollection = await MongoHelper.getCollection('surveyResults')
     await surveyResultCollection.deleteMany({})
-    accountCollection = await MongoHelper.getColletion('accounts')
+    accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -63,38 +67,83 @@ describe('SurveyResultMongo Repository', () => {
       const systemUnderTest = sutFactory()
       const survey = await fakeSurvey()
       const account = await fakeAccount()
-      const surveyResult = await systemUnderTest.save({
+      await systemUnderTest.save({
         surveyId: survey.id,
         accountId: account.id,
         answer: survey.answers[0].answer,
         date: new Date()
       })
 
+      const surveyResult = await surveyResultCollection.findOne({
+        surveyId: survey.id,
+        accountId: account.id
+      })
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.id).toBeTruthy()
-      expect(surveyResult.answer).toBe(survey.answers[0].answer)
     })
 
     test('Should update a survey result if its not new', async () => {
       const systemUnderTest = sutFactory()
       const survey = await fakeSurvey()
       const account = await fakeAccount()
-      const response = await surveyResultCollection.insertOne({
-        surveyId: survey.id,
-        accountId: account.id,
+      await surveyResultCollection.insertOne({
+        surveyId: ObjectId(survey.id),
+        accountId: ObjectId(account.id),
         answer: survey.answers[0].answer,
         date: new Date()
       })
-      const surveyResult = await systemUnderTest.save({
+      await systemUnderTest.save({
         surveyId: survey.id,
         accountId: account.id,
         answer: survey.answers[1].answer,
         date: new Date()
       })
 
+      const surveyResult = await surveyResultCollection.find({
+        surveyId: survey.id,
+        accountId: account.id
+      }).toArray()
+
       expect(surveyResult).toBeTruthy()
-      expect(surveyResult.id).toEqual(response.ops[0]._id)
-      expect(surveyResult.answer).toBe(survey.answers[1].answer)
+      expect(surveyResult.length).toBe(1)
+    })
+  })
+
+  describe('loadBySurveyId()', () => {
+    test('Should load a survey result', async () => {
+      const systemUnderTest = sutFactory()
+      const survey = await fakeSurvey()
+      const account = await fakeAccount()
+      await surveyResultCollection.insertMany([{
+        surveyId: ObjectId(survey.id),
+        accountId: ObjectId(account.id),
+        answer: survey.answers[0].answer,
+        date: new Date()
+      }, {
+        surveyId: ObjectId(survey.id),
+        accountId: ObjectId(account.id),
+        answer: survey.answers[0].answer,
+        date: new Date()
+      }, {
+        surveyId: ObjectId(survey.id),
+        accountId: ObjectId(account.id),
+        answer: survey.answers[1].answer,
+        date: new Date()
+      }, {
+        surveyId: ObjectId(survey.id),
+        accountId: ObjectId(account.id),
+        answer: survey.answers[1].answer,
+        date: new Date()
+      }])
+      const surveyResult = await systemUnderTest.loadBySurveyId(survey.id)
+
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult?.surveyId).toEqual(survey.id)
+      expect(surveyResult?.answers[0].count).toBe(2)
+      expect(surveyResult?.answers[0].percent).toBe(50)
+      expect(surveyResult?.answers[1].count).toBe(2)
+      expect(surveyResult?.answers[1].percent).toBe(50)
+      expect(surveyResult?.answers[2].count).toBe(0)
+      expect(surveyResult?.answers[2].percent).toBe(0)
     })
   })
 })

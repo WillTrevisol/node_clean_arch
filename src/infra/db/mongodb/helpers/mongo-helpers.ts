@@ -19,7 +19,7 @@ export const MongoHelper = {
     this.mongoClient = undefined
   },
 
-  async getColletion (name: string): Promise<Collection> {
+  async getCollection (name: string): Promise<Collection> {
     if (!this.mongoClient?.isConnected()) {
       await this.connect(this.uri)
     }
