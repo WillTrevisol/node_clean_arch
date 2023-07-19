@@ -1,5 +1,5 @@
-import { type LoadSurveyById, type HttpRequest, type SaveSurveyResult } from '@/presentation/controllers/survey-result//save-survey-result-controller-protocols'
-import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result-controller'
+import { type LoadSurveyById, type HttpRequest, type SaveSurveyResult } from '@/presentation/controllers/survey-result/save-survey-result/save-survey-result-controller-protocols'
+import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result/save-survey-result-controller'
 import { ok, forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { InvalidParameterError } from '@/presentation/errors'
 import { mockLoadSurveyById, mockSaveSurveyResult } from '@/tests/presentation/mocks'
